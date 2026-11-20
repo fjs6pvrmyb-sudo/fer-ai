@@ -1,6 +1,6 @@
 # FER AI
 
-Aplicación web multiempresa para registrar ventas y pagos. Esta versión incluye autenticación con Supabase, catálogo con precios vigentes, venta manual, cobros posteriores, cierres diarios, conciliación documental y dashboard gerencial. La Panadería y Business comparten el mismo núcleo y se configuran por organización.
+Aplicación web multiempresa para registrar ventas y pagos. Esta versión incluye autenticación con Supabase, catálogo con precios vigentes, venta manual y conversacional, cobros posteriores, cierres diarios, conciliación documental y dashboard gerencial. La Panadería y Business comparten el mismo núcleo y se configuran por organización.
 
 ## Desarrollo local
 
@@ -56,6 +56,18 @@ El asistente externo se activa con `FER_INTELLIGENCE_MODE=openai`, una clave aut
 
 Las verificaciones de navegador usan el proveedor demo por defecto. Para probar el estado deshabilitado, ejecutá `FERIA_TEST_INTELLIGENCE_MODE=disabled npm run test:e2e -- --grep "asistente deshabilitado"` después de compilar. Ninguno de esos recorridos usa OpenAI.
 
+### Venta conversacional · Recorrido Dojo
+
+Usá Supabase local con datos ficticios y arrancá la aplicación con `FER_INTELLIGENCE_MODE=demo npm run dev -- --hostname 127.0.0.1`. Con una cuenta gerencial, abrí **Preguntale a FER**. Con una cuenta de operador, entrá por **Registrar venta → Preparar con FER**.
+
+1. En **Panadería Demo**, escribí «FER, vendí un pan de masa madre de cinco mil colones. Me pagaron dos mil por SINPE y quedaron tres mil pendientes». Revisá el producto, total ₡5.000, pago ₡2.000 y saldo ₡3.000.
+2. Probá corregir un dato en el formulario o con «Perdón, eran tres». El borrador y su revisión permanecen fuera del historial financiero. Podés cancelar ese borrador y volver a preparar el original.
+3. Elegí **Revisar borrador** y, después de comprobar las cifras, **Confirmar venta**. Abrí el detalle o el historial desde el resultado.
+4. En el mismo asistente, con permisos gerenciales, preguntá «¿Cuánto vendimos hoy?». Compará la respuesta con el dashboard de la jornada.
+5. Cambiá a **Cafetería Demo** y escribí «Vendí un café filtrado». La semilla establece ₡1.800 y deja el pago inicial pendiente de indicar.
+
+Para pagos divididos, prepará una venta de ₡5.000 y agregá «Me pagaron dos mil en efectivo y tres mil con tarjeta». El modo demo admite estas expresiones y un vocabulario acotado. La venta manual conserva su acceso cuando falla el proveedor. El recorrido de navegador se reproduce con `npm run test:e2e -- tests/e2e/conversation.spec.ts` tras compilar.
+
 ### Supabase en el entorno administrado
 
 Si el proxy del entorno desvía el control de salud interno de GoTrue y la CLI informa un HTTP 403, iniciá la pila con `DO_NOT_TRACK=1 npm run db:start -- --ignore-health-check`. Después comprobá el endpoint local con `curl --noproxy '*' --fail --silent --output /dev/null http://127.0.0.1:54321/auth/v1/health` y ejecutá las pruebas de Auth y RLS. Ese control de la CLI puede fallar aunque el servicio responda directamente.
@@ -74,8 +86,10 @@ npm run test:db
 npm run test:collections
 npm run test:operations
 npm run test:intelligence
+npm run test:conversation
 npm run test:atomic
 npm run test:collection-atomic
+npm run test:conversation-atomic
 npm run build
 npx playwright install chromium
 npm run test:e2e

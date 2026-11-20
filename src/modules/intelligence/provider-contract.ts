@@ -19,11 +19,10 @@ export class ProviderFailure extends Error {
   }
 }
 
-export async function interpretWithDeadline(
-  provider: Provider,
-  input: RequestInput,
+export async function withProviderDeadline<T>(
+  run: (signal: AbortSignal) => Promise<T>,
   milliseconds = 8_000,
-): Promise<Interpretation> {
+): Promise<T> {
   const controller = new AbortController();
   let timeout: ReturnType<typeof setTimeout> | undefined;
   const limit = new Promise<never>((_, reject) => {
@@ -33,11 +32,18 @@ export async function interpretWithDeadline(
     }, milliseconds);
   });
   try {
-    return await Promise.race([
-      limit,
-      provider.interpret(input, controller.signal),
-    ]);
+    return await Promise.race([limit, run(controller.signal)]);
   } finally {
     clearTimeout(timeout);
   }
 }
+
+export const interpretWithDeadline = (
+  provider: Provider,
+  input: RequestInput,
+  milliseconds?: number,
+) =>
+  withProviderDeadline(
+    (signal) => provider.interpret(input, signal),
+    milliseconds,
+  );

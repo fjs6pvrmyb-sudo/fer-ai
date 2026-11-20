@@ -24,6 +24,14 @@ export default async function NewSalePage({
       <PageHeading
         title="Registrar venta"
         description="Agregá los productos y registrá los pagos recibidos."
+        action={
+          <Link
+            className="button secondary"
+            href={`/empresas/${org}/ventas/conversacional`}
+          >
+            Preparar con FER
+          </Link>
+        }
       />
       {products.length ? (
         <SaleForm

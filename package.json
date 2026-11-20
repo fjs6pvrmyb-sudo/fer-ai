@@ -23,7 +23,9 @@
     "test:collections": "node --env-file=.env.local --test scripts/test-collections.mjs",
     "test:collection-atomic": "docker exec -i supabase_db_feria psql -U postgres -v ON_ERROR_STOP=1 < tests/collection-rollback.sql",
     "test:operations": "node --env-file=.env.local --test scripts/test-operations.mjs",
-    "test:intelligence": "node --env-file=.env.local --test scripts/test-intelligence.mjs"
+    "test:intelligence": "node --env-file=.env.local --test scripts/test-intelligence.mjs",
+    "test:conversation": "node --env-file=.env.local --test scripts/test-conversation.mjs",
+    "test:conversation-atomic": "docker exec -i supabase_db_feria psql -U postgres -v ON_ERROR_STOP=1 < tests/conversation-rollback.sql"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",

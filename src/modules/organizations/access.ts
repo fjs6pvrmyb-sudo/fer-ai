@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { notFound } from "next/navigation";
 import { z } from "zod";
+import type { PaymentMethod } from "@/modules/payments/methods";
 import { requireSession } from "@/modules/auth/session";
 
 export const roles = ["admin", "manager", "operator"] as const;
@@ -16,6 +17,7 @@ export type Organization = {
   currency: string;
   scale: number;
   timezone: string;
+  conversational_payment_methods?: PaymentMethod[];
 };
 
 export const organizationAccess = cache(async (org: string) => {
@@ -25,7 +27,7 @@ export const organizationAccess = cache(async (org: string) => {
   const [company, membership] = await Promise.all([
     client
       .from("organizations")
-      .select("id,name,currency,scale,timezone")
+      .select("id,name,currency,scale,timezone,conversational_payment_methods")
       .eq("id", org)
       .maybeSingle<Organization>(),
     client
