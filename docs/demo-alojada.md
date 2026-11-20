@@ -1,5 +1,7 @@
 # Preparar una instancia aislada para Dojo
 
+Este procedimiento corresponde a la revisión de Fase 5 `1eff12c830baffebf627006edd6cf51a28972e27`, que contiene seis migraciones. La migración fiscal posterior pertenece a la prueba offline de Fase 6A y requiere una revisión independiente para cualquier entorno alojado.
+
 La opción evaluada usa un proyecto Vercel para Next.js y un proyecto Supabase exclusivo del evento. Mantené el ensayo local como alternativa si el proveedor de alojamiento elegido no ofrece protección de acceso en el plan autorizado. Confirmá disponibilidad, elegibilidad del plan y límites en las consolas antes de crear recursos. Para esta fase se verificó el arranque local con Next.js en modo de producción y Supabase local.
 
 ## Aprovisionar después de la autorización

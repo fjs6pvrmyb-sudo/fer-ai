@@ -71,6 +71,7 @@ Para pagos divididos, prepará una venta de ₡5.000 y agregá «Me pagaron dos 
 - [Guion de tres minutos para Dojo](docs/dojo-demo.md)
 - [Validación de OpenAI y control de consumo](docs/openai-validacion.md)
 - [Configuración y recuperación de una demo aislada](docs/demo-alojada.md)
+- [Contrato fiscal Fase 6A y prueba sin conexión](docs/fase-6a-fiscal.md)
 
 ### Supabase en el entorno administrado
 

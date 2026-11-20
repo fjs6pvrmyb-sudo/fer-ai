@@ -96,3 +96,11 @@ La clasificación de las fases 1 a 4A como trabajo previo al hackathon se mantie
 ### Restauración del respaldo incremental
 
 El bundle local contiene solo `refs/heads/work` y requiere como base `d2593e0`, ya presente en el remoto. Para comprobarlo en un repositorio que ya tenga esa base, ejecutá `git bundle verify /ruta/FERIA-work.bundle`. Para inspeccionarlo sin cambiar la rama actual, ejecutá `git fetch /ruta/FERIA-work.bundle refs/heads/work:refs/heads/recuperacion-feria` y compará ese SHA con el de la entrega. Una publicación futura requiere reconfirmar la visibilidad privada y autorizar específicamente el push de `work`.
+
+## Fase 6A · Contrato fiscal offline
+
+**Trabajo del evento, 20 de noviembre de 2026 en Costa Rica (UTC−06:00).** Fase 6A se registra en un commit independiente sobre `1eff12c830baffebf627006edd6cf51a28972e27`. El historial anterior y el respaldo de Fase 5 conservan su clasificación original.
+
+- **Prueba fiscal.** La migración `20261120000600_fiscal_offline.sql` agrega configuración fiscal aislada, consecutivos atómicos, intenciones, documentos e historial. Se prepararon una factura y un tiquete sintéticos con `@dojocoding/hacienda-sdk@0.13.0`. Cada XML tenía ₡1.130 de total con IVA incluido, ₡1.000 de base y ₡130 de IVA. Ambos pasaron el XSD del SDK, sin firma, datos reales ni transmisión a Hacienda.
+- **Verificación.** En Supabase desechable se aplicaron siete migraciones. Aprobaron instalación reproducible, TypeScript, lint y build, 58 unitarias, 5 integraciones fiscales, 25 integraciones del núcleo, tres comprobaciones de reversión y 13 recorridos de Playwright. PostgreSQL rechazó los intentos directos de alterar el XML, la instantánea y el historial. La auditoría npm de producción reportó cero vulnerabilidades.
+- **Uso de IA.** Codex implementó y verificó los cambios locales. El cálculo fiscal usa los exports exactos del SDK. La captura conversacional de FER AI conserva el flujo de Fase 5. [Contrato y reproducción](fase-6a-fiscal.md).

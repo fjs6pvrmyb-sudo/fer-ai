@@ -25,9 +25,11 @@
     "test:operations": "node --env-file=.env.local --test scripts/test-operations.mjs",
     "test:intelligence": "node --env-file=.env.local --test scripts/test-intelligence.mjs",
     "test:conversation": "node --env-file=.env.local --test scripts/test-conversation.mjs",
-    "test:conversation-atomic": "docker exec -i supabase_db_feria psql -U postgres -v ON_ERROR_STOP=1 < tests/conversation-rollback.sql"
+    "test:conversation-atomic": "docker exec -i supabase_db_feria psql -U postgres -v ON_ERROR_STOP=1 < tests/conversation-rollback.sql",
+    "test:fiscal": "node --env-file=.env.local node_modules/vitest/vitest.mjs run --config vitest.fiscal.config.mts"
   },
   "dependencies": {
+    "@dojocoding/hacienda-sdk": "0.13.0",
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.119.2",
     "next": "16.4.6",
