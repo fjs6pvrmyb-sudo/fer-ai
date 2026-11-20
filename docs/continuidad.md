@@ -16,11 +16,15 @@
 - El RPC bloquea organización, venta y jornada en ese orden. Recalcula el saldo antes de grabar y guarda pago, solicitud idempotente y auditoría en la misma transacción. La clave pertenece al actor y a la empresa dentro de la operación de cobro.
 - Un reintento equivalente recupera el cobro y el saldo inmediatamente posterior a ese pago. El detalle e historial muestran el saldo actual. Si falla la conexión, el formulario conserva el mismo intento mientras la página siga abierta.
 
-## Contratos para la siguiente fase
+## Cierres y conciliación
 
-| Dominio          | Responsabilidad prevista                                                                                                                                                                         |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Cierre y ajustes | Tomar una instantánea reproducible coordinada con las escrituras de la jornada. Registrar correcciones como compensaciones autorizadas con motivo y referencias, preservando el cierre original. |
-| Conciliación     | Vincular evidencia a un movimiento existente y versionar las revisiones. Distinguir cobros registrados, verificados, efectivo contado y diferencias.                                             |
-| Reportes         | Agregar por jornada de venta y de cobro, con saldos históricos a fecha de corte. El panel actual resume las ventas, los pagos y los saldos acumulados de la empresa.                             |
-| Asistente        | Traducir texto a borrador estructurado y reutilizar validación, revisión y confirmación. Exponer al asistente gerencial únicamente consultas predefinidas de lectura.                            |
+- `operations_metrics` agrupa ventas por fecha de venta y cobros por fecha de cobro. Calcula el saldo de la empresa al corte con todos los movimientos hasta la fecha final. El filtro abarca hasta 366 días inclusivos.
+- `start_day_close` pone una jornada en revisión. `complete_day_close` usa el mismo bloqueo por organización que ventas y cobros, y vuelve a calcular las cifras. La versión revisada debe coincidir. La jornada y su instantánea se persisten junto con la auditoría. Repetir el cierre devuelve el identificador existente y las operaciones de la app carecen de permisos para editar la instantánea.
+- El efectivo esperado solo incluye cobros en efectivo. El conteo y su diferencia quedan nulos cuando falta el conteo. El cierre guarda los pendientes documentales del momento y la jornada muestra por separado el estado actual.
+- `save_payment_evidence` permite revisar una referencia por movimiento, con auditoría antes y después. El estado documental se deriva de los movimientos y sus referencias actuales. La revisión permanece disponible para jornadas cerradas. Se admiten referencias de texto, sin archivos.
+
+## Pendientes y siguiente fase
+
+- **Ajustes posteriores.** Diseñar movimientos compensatorios con organización, origen, importe exacto, motivo, actor y clave idempotente. Aplicarlos en jornadas abiertas bajo el mismo orden de bloqueo. Incorporar los ajustes en los cortes futuros y preservar las instantáneas ya guardadas.
+- **Caja.** Incorporar fondo inicial, retiros y otros movimientos solo cuando exista su modelo de datos. La diferencia actual se compara con el efectivo de los cobros registrados.
+- **IA.** Empezar con consultas de solo lectura por empresa y período. Reutilizar `operations_metrics` y las instantáneas con los permisos actuales. Informar el período y los pendientes en cada respuesta. Para la captura, producir un borrador y usar las validaciones y la confirmación humana existentes.

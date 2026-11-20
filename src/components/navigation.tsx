@@ -5,7 +5,13 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Icon, type IconName } from "./icon";
 
-export function Navigation({ org }: { org: string }) {
+export function Navigation({
+  org,
+  operations,
+}: {
+  org: string;
+  operations: boolean;
+}) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
   const base = `/empresas/${org}`;
@@ -15,6 +21,14 @@ export function Navigation({ org }: { org: string }) {
     { href: `${base}/ventas`, label: "Ventas", icon: "receipt" },
     { href: `${base}/configuracion`, label: "Configuración", icon: "settings" },
   ];
+  if (operations) {
+    sections.splice(
+      3,
+      0,
+      { href: `${base}/jornadas`, label: "Jornadas", icon: "receipt" },
+      { href: `${base}/conciliacion`, label: "Conciliación", icon: "wallet" },
+    );
+  }
   return (
     <div className="workspace-navigation">
       <button

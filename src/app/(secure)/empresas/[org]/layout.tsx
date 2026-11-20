@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Brand, Icon } from "@/components/icon";
 import { Navigation } from "@/components/navigation";
+import { canManageOperations } from "@/modules/operations/model";
 import { signOut } from "@/modules/auth/actions";
 import { organizationAccess, roleLabels } from "@/modules/organizations/access";
 
@@ -32,7 +33,7 @@ export default async function WorkspaceLayout({
             <Icon name="switch" size={15} />
           </Link>
         </div>
-        <Navigation org={org} />
+        <Navigation org={org} operations={canManageOperations(role)} />
         <form action={signOut} className="sign-out">
           <button>
             <Icon name="exit" size={18} /> Cerrar sesión

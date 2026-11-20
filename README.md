@@ -1,6 +1,6 @@
 # FER AI
 
-Aplicación web multiempresa para registrar ventas y pagos. Esta versión incluye autenticación con Supabase, catálogo con precios vigentes, venta manual y consulta de operaciones persistidas. La Panadería y Business comparten el mismo núcleo y se configuran por organización.
+Aplicación web multiempresa para registrar ventas y pagos. Esta versión incluye autenticación con Supabase, catálogo con precios vigentes, venta manual, cobros posteriores, cierres diarios, conciliación documental y dashboard gerencial. La Panadería y Business comparten el mismo núcleo y se configuran por organización.
 
 ## Desarrollo local
 
@@ -32,6 +32,14 @@ En **Panadería Demo → Registrar venta**, elegí una unidad de **Pan de masa m
 
 En **Catálogo**, un administrador puede agregar o editar productos. Los cambios de precio preservan la versión anterior. En **Configuración** puede editar nombre y zona horaria y gestionar el acceso de cuentas ya provisionadas en Supabase Auth. La moneda y su escala se definen al aprovisionar una organización. La demo usa CRC y `America/Costa_Rica` y registra ventas con cantidades enteras.
 
+### Jornadas, cierres y conciliación
+
+Con una cuenta de gerente o administrador, elegí una empresa y abrí **Jornadas → Ver jornada actual**. Revisá las cifras, iniciá la revisión y confirmá el cierre operativo. Dejá el conteo vacío si está pendiente o ingresá 0 si se contaron cero unidades. La diferencia prevista se calcula con los cobros en efectivo registrados.
+
+En **Conciliación**, seleccioná la jornada del cobro y agregá una referencia ficticia, su importe y un estado. Una verificación exige que los importes coincidan. Una discrepancia exige observaciones. En **Inicio**, el dashboard filtra por fecha o período y enlaza al detalle. El saldo se calcula al cierre de la fecha final.
+
+Para reproducir el escenario de dos jornadas sin cambiar el reloj, ejecutá `npm run test:operations`. El recorrido de navegador completo está en `tests/e2e/operations.spec.ts` y se ejecuta con `npm run test:e2e -- tests/e2e/operations.spec.ts` tras compilar.
+
 ### Supabase en el entorno administrado
 
 Si el proxy del entorno desvía el control de salud interno de GoTrue y la CLI informa un HTTP 403, iniciá la pila con `DO_NOT_TRACK=1 npm run db:start -- --ignore-health-check`. Después comprobá el endpoint local con `curl --noproxy '*' --fail --silent --output /dev/null http://127.0.0.1:54321/auth/v1/health` y ejecutá las pruebas de Auth y RLS. Ese control de la CLI puede fallar aunque el servicio responda directamente.
@@ -48,6 +56,7 @@ npm run lint
 npm test
 npm run test:db
 npm run test:collections
+npm run test:operations
 npm run test:atomic
 npm run test:collection-atomic
 npm run build

@@ -21,7 +21,8 @@
     "demo:seed": "node --env-file=.env.local scripts/seed-demo.mjs",
     "test:atomic": "docker exec -i supabase_db_feria psql -U postgres -v ON_ERROR_STOP=1 < tests/sales-rollback.sql",
     "test:collections": "node --env-file=.env.local --test scripts/test-collections.mjs",
-    "test:collection-atomic": "docker exec -i supabase_db_feria psql -U postgres -v ON_ERROR_STOP=1 < tests/collection-rollback.sql"
+    "test:collection-atomic": "docker exec -i supabase_db_feria psql -U postgres -v ON_ERROR_STOP=1 < tests/collection-rollback.sql",
+    "test:operations": "node --env-file=.env.local --test scripts/test-operations.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
