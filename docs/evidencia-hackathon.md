@@ -52,3 +52,21 @@
 - **Demostración.** Playwright en Chromium móvil consultó ventas por ₡5.000 y cobros por SINPE por ₡2.000 en Panadería Demo. Encontró un cobro pendiente de verificar. Cafetería Demo devolvió sus propios ₡1.800 en ventas y ₡1.000 cobrados. La prueba rechazó la consulta cruzada, verificó el cambio de contexto y confirmó que el dashboard siguió disponible tras simular una interrupción. Genera `intelligence-movil.png` en `test-results/`.
 - **Resultados.** Pasaron TypeScript, lint y build, 25 pruebas Vitest, 18 de integración con PostgreSQL y Auth, 2 de reversión SQL y 8 recorridos Playwright en total. La auditoría npm de dependencias de producción reportó 0 vulnerabilidades. El recorrido deshabilitado se ejecutó por separado de la suite demo.
 - **Uso de IA.** Codex generó la implementación y ejecutó sus verificaciones. La interpretación en la demo es determinista y las cifras salen de PostgreSQL. El adaptador OpenAI usa SDK 7.62.0 y Responses API con Structured Outputs. El entorno carecía de configuración autorizada para una llamada externa y queda pendiente esa verificación.
+
+## Respaldo con autoría privada
+
+Los nueve commits posteriores a la línea base se reconstruyeron con la dirección privada de GitHub en los campos de autor y committer. Se preservaron los nombres, las fechas con su zona horaria, los mensajes, el orden y el árbol de archivos de cada commit. El commit inicial mantiene su SHA. Las referencias de las fases anteriores identifican los commits originales y la tabla vincula sus equivalentes reconstruidos.
+
+La clasificación de las fases 1 a 4A como trabajo previo al hackathon se mantiene según las fechas originales. Este registro documenta el respaldo.
+
+| SHA original                               | SHA reconstruido                           |
+| ------------------------------------------ | ------------------------------------------ |
+| `1a1ad4cc7dcd9ddca9bb75e595ad65addf5c61c4` | `d4f7ef26a60ca8658ee2012494ab455bcf37df43` |
+| `8a76c0d93d201c22667675ba98ce1a3cb9537d8e` | `dcd62fbcb19423334e8b5b59e6583a961c79c07f` |
+| `a4f6b468134482ca98790e76b7699d284d0a43c3` | `be738b0ac08509ad0304fdc385cbd5fe6fb5488a` |
+| `4ac483dae95bd37cd3da6b15a1d88f1103a19f4e` | `56dda65fd2e8de011c68a5925cc27a1f79c15746` |
+| `b97e9bf038528e453b282f6125f5aa89d5a8b762` | `87f0b3fe1c58c173255eaa7543cdd9eea2021348` |
+| `9d6aedc215cbe4906a724f9d57e662e9464d70cc` | `3500fcc20e69f60c08346ca7245911467a252e39` |
+| `d4be6960bc3d58d589f23e665bc6e7c446a0d274` | `f5be83d8229ba50641a2f7aaeff18157e4833690` |
+| `2fe860af88de49bd8881fc24f85b77395f60cf2c` | `72e8361507f33e9bc54420500b9349e8fbbcb1cc` |
+| `4ee2ebe5a37a236fc0ae6a7b018ac16c380c4e7f` | `5bce31aafc1c0c5c95399e34c3463df43c576e96` |
