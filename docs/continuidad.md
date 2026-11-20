@@ -23,8 +23,15 @@
 - El efectivo esperado solo incluye cobros en efectivo. El conteo y su diferencia quedan nulos cuando falta el conteo. El cierre guarda los pendientes documentales del momento y la jornada muestra por separado el estado actual.
 - `save_payment_evidence` permite revisar una referencia por movimiento, con auditoría antes y después. El estado documental se deriva de los movimientos y sus referencias actuales. La revisión permanece disponible para jornadas cerradas. Se admiten referencias de texto, sin archivos.
 
+## FER AI Intelligence
+
+- El proveedor interpreta la pregunta en un plan tipado de una lista cerrada. La capa de consultas vincula todas las lecturas a la empresa activa y a la sesión autenticada. No se envían al proveedor filas, nombres del catálogo, referencias documentales, credenciales ni conversaciones anteriores. El texto de la pregunta sí se envía en modo OpenAI.
+- El servidor resuelve fechas en la zona contable de la empresa, valida los períodos y conserva los importes exactos. Las explicaciones, las fuentes y hasta tres recomendaciones provienen de reglas deterministas. El ranking devuelve hasta cinco productos con sus nombres actuales.
+- PostgreSQL reserva hasta 8 consultas por minuto y 60 por día por actor, compartidas entre sus empresas. El registro técnico incluye actor, empresa, modelo, tipo de consulta, estado y tokens disponibles. Las reservas purgan registros del actor de más de 30 días. El historial de mensajes solo existe en memoria de la página.
+- La empresa activa aporta nombre, moneda y zona horaria. Las capacidades de lectura y los medios corresponden a los módulos actuales. Las fechas ambiguas, la cobertura incompleta y la falta de datos se muestran explícitamente.
+
 ## Pendientes y siguiente fase
 
 - **Ajustes posteriores.** Diseñar movimientos compensatorios con organización, origen, importe exacto, motivo, actor y clave idempotente. Aplicarlos en jornadas abiertas bajo el mismo orden de bloqueo. Incorporar los ajustes en los cortes futuros y preservar las instantáneas ya guardadas.
 - **Caja.** Incorporar fondo inicial, retiros y otros movimientos solo cuando exista su modelo de datos. La diferencia actual se compara con el efectivo de los cobros registrados.
-- **IA.** Empezar con consultas de solo lectura por empresa y período. Reutilizar `operations_metrics` y las instantáneas con los permisos actuales. Informar el período y los pendientes en cada respuesta. Para la captura, producir un borrador y usar las validaciones y la confirmación humana existentes.
+- **Fase 4B.** Mantener la extracción conversacional de ventas separada de las herramientas gerenciales. Producir un borrador tipado con referencias de catálogo autorizadas, mostrar ambigüedades y diferencias, y usar la revisión humana, la validación y la operación idempotente existentes para confirmar.

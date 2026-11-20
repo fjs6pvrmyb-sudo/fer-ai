@@ -25,6 +25,7 @@ export function Navigation({
     sections.splice(
       3,
       0,
+      { href: `${base}/intelligence`, label: "Preguntale a FER", icon: "grid" },
       { href: `${base}/jornadas`, label: "Jornadas", icon: "receipt" },
       { href: `${base}/conciliacion`, label: "Conciliación", icon: "wallet" },
     );

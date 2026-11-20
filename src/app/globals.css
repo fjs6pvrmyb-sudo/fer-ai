@@ -837,3 +837,99 @@ label {
   padding: 0.65rem 0.75rem;
   resize: vertical;
 }
+
+.intelligence-layout,
+.intelligence-thread,
+.intelligence-turn {
+  display: grid;
+  gap: 1rem;
+}
+
+.intelligence-layout {
+  max-width: 56rem;
+}
+
+.intelligence-mode {
+  background: #edf2ff;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+
+.intelligence-question {
+  justify-self: end;
+  max-width: min(100%, 36rem);
+  color: var(--ink);
+  background: #e9efff;
+  padding: 0.7rem 1rem;
+  border-radius: 12px 12px 4px 12px;
+  overflow-wrap: anywhere;
+}
+
+.intelligence-answer {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.intelligence-answer h2 {
+  margin-bottom: 0.15rem;
+}
+.intelligence-answer-header p {
+  font-size: 0.85rem;
+}
+.intelligence-indicators {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+}
+.intelligence-indicator {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.75rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.intelligence-indicator dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+}
+.intelligence-indicator dd strong {
+  font-size: 1.15rem;
+}
+
+.intelligence-suggestions,
+.intelligence-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 1rem;
+}
+
+.intelligence-suggestions {
+  margin-bottom: 1rem;
+}
+.intelligence-suggestions button {
+  text-align: start;
+}
+.intelligence-period {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.intelligence-period legend {
+  font-weight: 650;
+}
+.intelligence-period p {
+  margin: 0.2rem 0 0.55rem;
+  font-size: 0.85rem;
+}
+.intelligence-notes,
+.intelligence-recommendations {
+  border-left: 3px solid #b5c8fa;
+  padding-left: 0.8rem;
+}
+.intelligence-recommendations ol {
+  padding-left: 1.2rem;
+  list-style: decimal;
+}

@@ -40,6 +40,22 @@ En **Conciliación**, seleccioná la jornada del cobro y agregá una referencia 
 
 Para reproducir el escenario de dos jornadas sin cambiar el reloj, ejecutá `npm run test:operations`. El recorrido de navegador completo está en `tests/e2e/operations.spec.ts` y se ejecuta con `npm run test:e2e -- tests/e2e/operations.spec.ts` tras compilar.
 
+### FER AI Intelligence
+
+Abrí **Preguntale a FER** con una cuenta de gerente o administrador. Elegí el período de referencia para preguntas sin fecha. La aplicación admite hoy, ayer, esta semana (desde el lunes), semana pasada, último cierre y fechas explícitas ISO o día/mes/año. Las preguntas ambiguas piden aclaración.
+
+Para probarlo con Supabase local y las cuentas ficticias, ejecutá:
+
+```sh
+FER_INTELLIGENCE_MODE=demo npm run dev -- --hostname 127.0.0.1
+```
+
+El modo demo está identificado en pantalla. Interpreta un vocabulario acotado de forma determinista y consulta cifras reales de la base ficticia. Las preguntas sugeridas permiten verificarlo. La frase `Simular interrupción del proveedor` comprueba la degradación en demo.
+
+El asistente externo se activa con `FER_INTELLIGENCE_MODE=openai`, una clave autorizada en `OPENAI_API_KEY` y un modelo compatible con Structured Outputs en `FER_INTELLIGENCE_MODEL`. Guardá la configuración únicamente en el servidor. En un entorno con salida restringida, la integración externa requiere acceso a `api.openai.com`. Sin configuración completa se muestra **Asistente deshabilitado**. El adaptador usa el SDK oficial y Responses API con `store: false`, una llamada por consulta, hasta 450 tokens de salida y un tiempo máximo de 8 segundos.
+
+Las verificaciones de navegador usan el proveedor demo por defecto. Para probar el estado deshabilitado, ejecutá `FERIA_TEST_INTELLIGENCE_MODE=disabled npm run test:e2e -- --grep "asistente deshabilitado"` después de compilar. Ninguno de esos recorridos usa OpenAI.
+
 ### Supabase en el entorno administrado
 
 Si el proxy del entorno desvía el control de salud interno de GoTrue y la CLI informa un HTTP 403, iniciá la pila con `DO_NOT_TRACK=1 npm run db:start -- --ignore-health-check`. Después comprobá el endpoint local con `curl --noproxy '*' --fail --silent --output /dev/null http://127.0.0.1:54321/auth/v1/health` y ejecutá las pruebas de Auth y RLS. Ese control de la CLI puede fallar aunque el servicio responda directamente.
@@ -57,6 +73,7 @@ npm test
 npm run test:db
 npm run test:collections
 npm run test:operations
+npm run test:intelligence
 npm run test:atomic
 npm run test:collection-atomic
 npm run build

@@ -17,6 +17,12 @@ export default defineConfig({
     command: "npm run start -- --hostname 127.0.0.1",
     url: `${url}/acceso`,
     timeout: 30_000,
-    env: { NEXT_TELEMETRY_DISABLED: "1" },
+    env: {
+      NEXT_TELEMETRY_DISABLED: "1",
+      FER_INTELLIGENCE_MODE:
+        process.env.FERIA_TEST_INTELLIGENCE_MODE === "disabled"
+          ? "disabled"
+          : "demo",
+    },
   },
 });
