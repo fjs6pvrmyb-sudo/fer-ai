@@ -32,3 +32,14 @@
 - **Interfaz.** `tests/e2e/collection.spec.ts` verificó el error de saldo, el registro del cobro y la actualización del historial desde Chromium móvil. La captura local `cobro-posterior-movil.png` se genera dentro de `test-results/`.
 - **Resultados.** Build, TypeScript y lint aprobados. Pasaron 11 pruebas Vitest, 10 de integración con Auth/PostgreSQL (6 existentes y 4 de cobros), 2 comprobaciones de reversión SQL y 4 pruebas Playwright.
 - **Uso de IA.** Codex implementó el RPC, la interfaz, las pruebas y la documentación y ejecutó las verificaciones locales.
+
+## Fase 3 · Jornadas, cierres y conciliación
+
+**Trabajo previo al evento.** Commit `9d6aedc215cbe4906a724f9d57e662e9464d70cc` en `work`, registrado el 19 de noviembre de 2026 a las 22:51 en Costa Rica (UTC−06:00).
+
+- **Cierre.** `20261120000300_operations.sql` agrega la instantánea por jornada, el conteo opcional, el control de versión y los RPC `day_review`, `start_day_close` y `complete_day_close`. Las cuatro migraciones se aplicaron desde una base limpia.
+- **Conciliación y dashboard.** La misma migración agrega referencias documentales, auditoría de revisión, RLS y `operations_metrics`. Las pantallas consumen las consultas autorizadas de PostgreSQL. El dashboard filtra por fecha o período y distingue ventas, cobros y saldo histórico.
+- **Escenario de dos jornadas.** `npm run test:operations` verificó una venta de ₡5.000 y un cobro inicial de ₡2.000 en la jornada A. El cierre conservó ₡3.000 pendientes y un pago sin comprobar. En la jornada B se cobraron y verificaron ₡3.000. Quedaron una venta, dos pagos y saldo actual de ₡0. La instantánea de A conservó sus cifras incluso tras verificar posteriormente su evidencia.
+- **Pruebas.** Build, TypeScript y lint aprobados. Pasaron 11 pruebas Vitest, 15 de integración con PostgreSQL y Auth, 2 de reversión transaccional de fases anteriores y 5 de Playwright. Las pruebas nuevas incluyen ventas y cobros concurrentes con el cierre, revisión desactualizada, conteo cero y pendiente, sesión expirada, aislamiento y recorrido móvil.
+- **Capturas.** Playwright genera `cierre-operativo-movil.png`, `conciliacion-movil.png` y `dashboard-gerencial-movil.png` en `test-results/`, con fechas controladas y datos ficticios.
+- **Uso de IA.** Codex implementó las migraciones, las pantallas, las pruebas y la documentación y ejecutó la verificación local. Los ajustes históricos y la integración de IA en la aplicación siguen pendientes.
