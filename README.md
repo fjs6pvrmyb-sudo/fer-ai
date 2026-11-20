@@ -28,7 +28,7 @@ Abrí `http://127.0.0.1:3000/acceso` e ingresá con la contraseña que elegiste.
 | `operador@feria.example`  | Operador       | —              |
 | `cafeteria@feria.example` | —              | Operador       |
 
-En **Panadería Demo → Registrar venta**, elegí una unidad de **Pan de masa madre**, que cuesta ₡5.000 en la semilla. Agregá un pago de 2000 en efectivo, revisá y confirmá. El detalle identifica la venta y muestra un saldo de ₡3.000. Volvé a **Ventas** para localizar el mismo identificador. Cambiá a Cafetería Demo para ver su catálogo independiente.
+En **Panadería Demo → Registrar venta**, elegí una unidad de **Pan de masa madre**, que cuesta ₡5.000 en la semilla. Agregá un pago de 2000 por transferencia/SINPE, revisá y confirmá. El detalle identifica la venta y muestra un saldo de ₡3.000. Si ingresaste como gerente o administrador, abrí **Registrar cobro** en el detalle, elegí un medio e ingresá 3000. El recibo muestra la jornada y el identificador del cobro. Volvé a **Ventas** para localizar el mismo identificador de venta y comprobar que el saldo quedó en cero. Cambiá a Cafetería Demo para ver su catálogo independiente.
 
 En **Catálogo**, un administrador puede agregar o editar productos. Los cambios de precio preservan la versión anterior. En **Configuración** puede editar nombre y zona horaria y gestionar el acceso de cuentas ya provisionadas en Supabase Auth. La moneda y su escala se definen al aprovisionar una organización. La demo usa CRC y `America/Costa_Rica` y registra ventas con cantidades enteras.
 
@@ -47,13 +47,15 @@ npm run typecheck
 npm run lint
 npm test
 npm run test:db
+npm run test:collections
 npm run test:atomic
+npm run test:collection-atomic
 npm run build
 npx playwright install chromium
 npm run test:e2e
 ```
 
-Si Chromium ya está instalado, podés usar `FERIA_CHROMIUM_PATH=/ruta/a/chromium npm run test:e2e`. Playwright arranca el build en loopback. La prueba móvil deja una venta ficticia en la base. El test de atomicidad usa el contenedor de PostgreSQL administrado por la CLI local y revierte sus cambios de prueba. Los scripts de semilla e integración requieren una URL de loopback.
+Si Chromium ya está instalado, podés usar `FERIA_CHROMIUM_PATH=/ruta/a/chromium npm run test:e2e`. Playwright arranca el build en loopback. Las pruebas móviles dejan ventas ficticias en la base. Las pruebas de cobros incluyen una jornada histórica controlada y dos solicitudes concurrentes reales. El test de atomicidad usa el contenedor de PostgreSQL administrado por la CLI local y revierte sus cambios de prueba. Los scripts de semilla e integración requieren una URL de loopback.
 
 ## Estructura
 

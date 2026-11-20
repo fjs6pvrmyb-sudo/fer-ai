@@ -10,12 +10,17 @@
 
 - ESLint 9 sigue fijado por compatibilidad con los plugins de importaciones, accesibilidad y React del preset de Next.js. npm advierte que esa rama del linter dejó de recibir soporte. Actualizalo cuando esos plugins admitan ESLint 10 de forma conjunta.
 
+## Cobros posteriores
+
+- Gerentes y administradores pueden aplicar un cobro a una venta confirmada. La jornada del cobro se obtiene de la zona horaria de la empresa en la base. El movimiento conserva fecha efectiva, fecha de registro y actor. La app registra cobros de la jornada actual.
+- El RPC bloquea organización, venta y jornada en ese orden. Recalcula el saldo antes de grabar y guarda pago, solicitud idempotente y auditoría en la misma transacción. La clave pertenece al actor y a la empresa dentro de la operación de cobro.
+- Un reintento equivalente recupera el cobro y el saldo inmediatamente posterior a ese pago. El detalle e historial muestran el saldo actual. Si falla la conexión, el formulario conserva el mismo intento mientras la página siga abierta.
+
 ## Contratos para la siguiente fase
 
-| Dominio            | Responsabilidad prevista                                                                                                                                                                                                   |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Cobros posteriores | Aplicar un pago a una venta existente con una clave idempotente propia. Bloquear la venta, calcular el saldo y validar organización, moneda, permisos y jornada de cobro. El esquema de pagos admite una jornada distinta. |
-| Cierre y ajustes   | Tomar una instantánea reproducible coordinada con las escrituras de la jornada. Registrar correcciones como compensaciones autorizadas con motivo y referencias, preservando el cierre original.                           |
-| Conciliación       | Vincular evidencia a un movimiento existente y versionar las revisiones. Distinguir cobros registrados, verificados, efectivo contado y diferencias.                                                                       |
-| Reportes           | Agregar por jornada de venta y de cobro, con saldos históricos a fecha de corte. El panel actual resume las ventas, los pagos y los saldos acumulados de la empresa.                                                       |
-| Asistente          | Traducir texto a borrador estructurado y reutilizar validación, revisión y confirmación. Exponer al asistente gerencial únicamente consultas predefinidas de lectura.                                                      |
+| Dominio          | Responsabilidad prevista                                                                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Cierre y ajustes | Tomar una instantánea reproducible coordinada con las escrituras de la jornada. Registrar correcciones como compensaciones autorizadas con motivo y referencias, preservando el cierre original. |
+| Conciliación     | Vincular evidencia a un movimiento existente y versionar las revisiones. Distinguir cobros registrados, verificados, efectivo contado y diferencias.                                             |
+| Reportes         | Agregar por jornada de venta y de cobro, con saldos históricos a fecha de corte. El panel actual resume las ventas, los pagos y los saldos acumulados de la empresa.                             |
+| Asistente        | Traducir texto a borrador estructurado y reutilizar validación, revisión y confirmación. Exponer al asistente gerencial únicamente consultas predefinidas de lectura.                            |

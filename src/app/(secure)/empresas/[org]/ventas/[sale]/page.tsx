@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
@@ -6,6 +7,9 @@ import { organizationAccess } from "@/modules/organizations/access";
 import { paymentLabels, type PaymentMethod } from "@/modules/payments/methods";
 import { saleStatus, type Sale } from "@/modules/sales/contract";
 import { formatMoney } from "@/modules/shared/money";
+import { mayCollect } from "@/modules/payments/collection";
+import { collectPayment } from "@/modules/payments/actions";
+import { CollectionForm } from "./collection-form";
 
 type Line = {
   id: string;
@@ -18,6 +22,8 @@ type Payment = {
   method: PaymentMethod;
   amount_minor: string;
   day: string;
+  occurred_at: string;
+  created_at: string;
 };
 
 export const metadata = { title: "Venta registrada" };
@@ -28,7 +34,7 @@ export default async function SalePage({
   params: Promise<{ org: string; sale: string }>;
 }) {
   const { org, sale } = await params;
-  const { client } = await organizationAccess(org);
+  const { client, organization, role } = await organizationAccess(org);
   if (!z.uuid().safeParse(sale).success) notFound();
   const [entry, lines, payments] = await Promise.all([
     client
@@ -48,9 +54,10 @@ export default async function SalePage({
       .returns<Line[]>(),
     client
       .from("payment_details")
-      .select("id,method,amount_minor,day")
+      .select("id,method,amount_minor,day,occurred_at,created_at")
       .eq("organization_id", org)
       .eq("sale_id", sale)
+      .order("created_at")
       .order("id")
       .returns<Payment[]>(),
   ]);
@@ -61,6 +68,18 @@ export default async function SalePage({
   const status = saleStatus(record);
   const currency = (amount: bigint | string) =>
     formatMoney(amount, record.currency, record.scale);
+  const local = new Intl.DateTimeFormat("en-CA", {
+    timeZone: organization.timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const day = local.format(new Date());
+  const timestamp = new Intl.DateTimeFormat("es-CR", {
+    timeZone: organization.timezone,
+    dateStyle: "short",
+    timeStyle: "short",
+  });
   return (
     <>
       <Link className="back-link" href={`/empresas/${org}/ventas`}>
@@ -99,7 +118,21 @@ export default async function SalePage({
                   <div key={payment.id}>
                     <dt>
                       {paymentLabels[payment.method]}{" "}
-                      <span className="secondary-line">{payment.day}</span>
+                      <span className="secondary-line">
+                        Jornada {payment.day}
+                      </span>
+                      <span className="secondary-line">
+                        {payment.created_at === payment.occurred_at
+                          ? "Fecha efectiva y de registro: "
+                          : "Fecha efectiva: "}
+                        {timestamp.format(new Date(payment.occurred_at))}
+                      </span>
+                      {payment.created_at !== payment.occurred_at && (
+                        <span className="secondary-line">
+                          Fecha de registro:{" "}
+                          {timestamp.format(new Date(payment.created_at))}
+                        </span>
+                      )}
                     </dt>
                     <dd>{currency(payment.amount_minor)}</dd>
                   </div>
@@ -128,6 +161,17 @@ export default async function SalePage({
               <dd>{currency(record.balance_minor)}</dd>
             </div>
           </dl>
+          {mayCollect(role) && (
+            <CollectionForm
+              key={sale}
+              request={randomUUID()}
+              day={day}
+              currency={record.currency}
+              scale={record.scale}
+              balance={record.balance_minor}
+              action={collectPayment.bind(null, org, sale)}
+            />
+          )}
         </section>
       </div>
     </>
