@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Submit } from "@/components/form";
 import type { Answer } from "@/modules/intelligence/answer";
 import type { DraftKey, DraftView } from "@/modules/conversation/contract";
 import { DraftPanel, type DraftControls } from "./draft-panel";
 import type { RequestInput } from "@/modules/intelligence/plan";
 
-type Turn = { id: string; question: string; message: string; answer?: Answer };
+type Turn = { id: number; question: string; message: string; answer?: Answer };
 
 const suggestions = [
   "¿Cuánto vendimos y cuánto cobramos por SINPE?",
@@ -116,26 +116,37 @@ export function Chat({
 }: {
   organization: string;
   today: string;
-  action: (
-    request: RequestInput & { draft: DraftKey | null },
-  ) => Promise<{ message: string; answer?: Answer; draft?: DraftView | null }>;
+  action: (request: RequestInput & { draft: DraftKey | null }) => Promise<{
+    message: string;
+    answer?: Answer;
+    draft?: DraftView | null;
+    retryable?: boolean;
+  }>;
   controls: DraftControls;
   managerial: boolean;
 }) {
+  const productExample = controls.products[0]?.name;
+  const examples = [
+    ...(productExample ? [`Vendí 1 ${productExample}`] : []),
+    ...(managerial ? suggestions : ["Me equivoqué, eran dos unidades"]),
+  ];
   const [draft, setDraft] = useState(controls.initial);
   const [operationNotice, setOperationNotice] = useState("");
   const [question, setQuestion] = useState("");
   const [from, setFrom] = useState(today);
   const [to, setTo] = useState(today);
   const composer = useRef<HTMLTextAreaElement>(null);
+  const outcome = useRef<HTMLElement>(null);
+  const lastTurn = useRef<HTMLDivElement>(null);
+  const moveFocus = useRef<"outcome" | "reply" | null>(null);
   const [turns, send, pending] = useActionState(
     async (previous: Turn[], form: FormData) => {
       const active =
         draft && (draft.status === "editing" || draft.status === "review");
       const input = {
         question: question.trim(),
-        from: String(form.get("from") ?? today),
-        to: String(form.get("to") ?? today),
+        from: String(form.get("from") || today),
+        to: String(form.get("to") || today),
         draft: active ? { id: draft.id, revision: draft.revision } : null,
       };
       if (input.question.length < 3) return previous;
@@ -148,15 +159,17 @@ export function Chat({
         }
       } catch {
         result = {
+          retryable: true,
           message:
             "Se interrumpió la conexión. Intentá de nuevo o usá el formulario manual.",
         };
       }
-      setQuestion("");
+      if (!result.retryable && !result.answer?.retryable) setQuestion("");
+      moveFocus.current = result.draft !== undefined ? "outcome" : "reply";
       return [
         ...previous.slice(-5),
         {
-          id: crypto.randomUUID(),
+          id: (previous.at(-1)?.id ?? 0) + 1,
           question: input.question,
           message: result.message,
           answer: result.answer,
@@ -166,106 +179,22 @@ export function Chat({
     [],
   );
 
+  useEffect(() => {
+    const target = moveFocus.current;
+    if (target === "outcome") outcome.current?.focus();
+    if (target === "reply") lastTurn.current?.focus();
+    moveFocus.current = null;
+  }, [turns, draft, operationNotice]);
+
   return (
     <div className="intelligence-layout">
-      {turns.length > 0 && (
-        <div
-          className="intelligence-thread"
-          role="log"
-          aria-label="Conversación con FER"
-        >
-          {turns.map(({ id, question: asked, answer, message }) => (
-            <div className="intelligence-turn" key={id}>
-              <p className="intelligence-question">{asked}</p>
-              {answer ? (
-                <Response answer={answer} />
-              ) : (
-                <article className="surface panel">
-                  <p>{message}</p>
-                </article>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-      {operationNotice && (
-        <p className="feedback intelligence-mode" role="status">
-          {operationNotice}
-        </p>
-      )}
-      {draft && (
-        <DraftPanel
-          key={`${draft.id}:${draft.revision}:${draft.status}`}
-          draft={draft}
-          controls={controls}
-          onChange={(next, message) => {
-            setDraft(next);
-            setOperationNotice(message);
-          }}
-        />
-      )}
       <section
         className="surface panel intelligence-composer"
         aria-label="Enviar a FER"
       >
-        <div
-          className="intelligence-suggestions"
-          aria-label="Preguntas sugeridas"
-        >
-          {(managerial
-            ? [...suggestions, "Vendí un producto y me pagaron por SINPE"]
-            : [
-                "Vendí un producto y me pagaron por SINPE",
-                "Me equivoqué, eran dos unidades",
-              ]
-          ).map((suggestion) => (
-            <button
-              type="button"
-              className="button secondary"
-              key={suggestion}
-              disabled={pending}
-              onClick={() => {
-                setQuestion(suggestion);
-                composer.current?.focus();
-              }}
-            >
-              {suggestion}
-            </button>
-          ))}
-        </div>
         <form className="form-stack" action={send}>
-          {managerial && (
-            <fieldset className="intelligence-period">
-              <legend>Período de referencia</legend>
-              <p>Se usa cuando la pregunta no indica una fecha.</p>
-              <div className="operations-filter">
-                <label>
-                  Desde
-                  <input
-                    name="from"
-                    type="date"
-                    value={from}
-                    onChange={(event) => setFrom(event.target.value)}
-                    max={today}
-                    required
-                  />
-                </label>
-                <label>
-                  Hasta
-                  <input
-                    name="to"
-                    type="date"
-                    value={to}
-                    onChange={(event) => setTo(event.target.value)}
-                    max={today}
-                    required
-                  />
-                </label>
-              </div>
-            </fieldset>
-          )}
           <label>
-            Tu pregunta
+            Tu mensaje
             <textarea
               ref={composer}
               value={question}
@@ -279,13 +208,120 @@ export function Chat({
             />
           </label>
           <div>
-            <Submit pending="Consultando…">Enviar consulta</Submit>
+            <Submit pending="Procesando…">Enviar a FER</Submit>
           </div>
           {pending && (
-            <p role="status">Consultando información de {organization}.</p>
+            <p role="status">Procesando el mensaje para {organization}.</p>
+          )}
+          {managerial && (
+            <details className="intelligence-period">
+              <summary>Período de referencia</summary>
+              <p>Se usa cuando la pregunta no indica una fecha.</p>
+              <div className="operations-filter">
+                <label>
+                  Desde
+                  <input
+                    name="from"
+                    type="date"
+                    value={from}
+                    onChange={(event) => setFrom(event.target.value)}
+                    max={today}
+                  />
+                </label>
+                <label>
+                  Hasta
+                  <input
+                    name="to"
+                    type="date"
+                    value={to}
+                    onChange={(event) => setTo(event.target.value)}
+                    max={today}
+                  />
+                </label>
+              </div>
+            </details>
           )}
         </form>
+        {examples.length > 0 && (
+          <details className="intelligence-examples">
+            <summary>Ejemplos para esta empresa</summary>
+            <div className="intelligence-suggestions">
+              {examples.map((suggestion) => (
+                <button
+                  type="button"
+                  className="button secondary"
+                  key={suggestion}
+                  disabled={pending}
+                  onClick={() => {
+                    setQuestion(suggestion);
+                    composer.current?.focus();
+                  }}
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </details>
+        )}
       </section>
+      {(turns.length > 0 || draft || operationNotice) && (
+        <section
+          ref={outcome}
+          tabIndex={-1}
+          aria-label="Resultado de FER"
+          className="intelligence-outcome"
+        >
+          <button
+            className="text-link intelligence-return"
+            type="button"
+            onClick={() => composer.current?.focus()}
+          >
+            Volver al mensaje
+          </button>
+          {operationNotice && (
+            <p className="feedback intelligence-mode" role="status">
+              {operationNotice}
+            </p>
+          )}
+          {draft && (
+            <DraftPanel
+              key={`${draft.id}:${draft.revision}:${draft.status}`}
+              draft={draft}
+              controls={controls}
+              onChange={(next, message) => {
+                moveFocus.current = "outcome";
+                setDraft(next);
+                setOperationNotice(message);
+              }}
+            />
+          )}
+          {turns.length > 0 && (
+            <div
+              className="intelligence-thread"
+              role="log"
+              aria-label="Conversación con FER"
+            >
+              {turns.map(({ id, question: asked, answer, message }, index) => (
+                <div
+                  className="intelligence-turn"
+                  key={id}
+                  ref={index === turns.length - 1 ? lastTurn : undefined}
+                  tabIndex={-1}
+                >
+                  <p className="intelligence-question">{asked}</p>
+                  {answer ? (
+                    <Response answer={answer} />
+                  ) : (
+                    <article className="surface panel">
+                      <p>{message}</p>
+                    </article>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }

@@ -68,6 +68,10 @@ Usá Supabase local con datos ficticios y arrancá la aplicación con `FER_INTEL
 
 Para pagos divididos, prepará una venta de ₡5.000 y agregá «Me pagaron dos mil en efectivo y tres mil con tarjeta». El modo demo admite estas expresiones y un vocabulario acotado. La venta manual conserva su acceso cuando falla el proveedor. El recorrido de navegador se reproduce con `npm run test:e2e -- tests/e2e/conversation.spec.ts` tras compilar.
 
+- [Guion de tres minutos para Dojo](docs/dojo-demo.md)
+- [Validación de OpenAI y control de consumo](docs/openai-validacion.md)
+- [Configuración y recuperación de una demo aislada](docs/demo-alojada.md)
+
 ### Supabase en el entorno administrado
 
 Si el proxy del entorno desvía el control de salud interno de GoTrue y la CLI informa un HTTP 403, iniciá la pila con `DO_NOT_TRACK=1 npm run db:start -- --ignore-health-check`. Después comprobá el endpoint local con `curl --noproxy '*' --fail --silent --output /dev/null http://127.0.0.1:54321/auth/v1/health` y ejecutá las pruebas de Auth y RLS. Ese control de la CLI puede fallar aunque el servicio responda directamente.

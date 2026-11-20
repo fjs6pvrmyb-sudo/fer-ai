@@ -82,15 +82,13 @@ test("responde con los datos de dos empresas, aísla el contexto y tolera un fal
   }
 
   try {
-    const roles = await root
-      .from("memberships")
-      .insert(
-        [bakery, coffee].map((org) => ({
-          organization_id: org,
-          user_id: actor,
-          role: "manager",
-        })),
-      );
+    const roles = await root.from("memberships").insert(
+      [bakery, coffee].map((org) => ({
+        organization_id: org,
+        user_id: actor,
+        role: "manager",
+      })),
+    );
     expect(roles.error).toBeNull();
     expect(
       (await member.auth.signInWithPassword({ email, password })).error,
@@ -121,13 +119,22 @@ test("responde con los datos de dos empresas, aísla el contexto y tolera un fal
     const salesQuestion = "¿Cuánto vendimos y cuánto cobramos por SINPE?";
     const answer = () => page.getByRole("article").last();
     async function setPeriod() {
+      const dateFields = page
+        .locator("details")
+        .filter({ hasText: "Período de referencia" });
+      if (
+        !(await dateFields.evaluate(
+          (element: HTMLDetailsElement) => element.open,
+        ))
+      )
+        await dateFields.locator("summary").click();
       await page.getByLabel("Desde", { exact: true }).fill(day);
       await page.getByLabel("Hasta", { exact: true }).fill(day);
     }
     async function ask(question: string, expected: string) {
       const before = await page.getByRole("article").count();
-      await page.getByLabel("Tu pregunta").fill(question);
-      await page.getByRole("button", { name: "Enviar consulta" }).click();
+      await page.getByLabel("Tu mensaje").fill(question);
+      await page.getByRole("button", { name: "Enviar a FER" }).click();
       await expect(page.getByRole("article")).toHaveCount(before + 1);
       await expect(
         answer().getByText(expected, { exact: false }),
@@ -260,7 +267,7 @@ test("bloquea el espacio de inteligencia a una sesión sin acceso", async ({
     await expect(
       page.getByRole("heading", { name: "Página no disponible" }),
     ).toBeVisible();
-    await expect(page.getByLabel("Tu pregunta")).toHaveCount(0);
+    await expect(page.getByLabel("Tu mensaje")).toHaveCount(0);
   }
 });
 
@@ -281,5 +288,5 @@ test("muestra el asistente deshabilitado cuando falta configuración", async ({
   await expect(
     page.getByRole("heading", { name: "Asistente deshabilitado" }),
   ).toBeVisible();
-  await expect(page.getByLabel("Tu pregunta")).toHaveCount(0);
+  await expect(page.getByLabel("Tu mensaje")).toHaveCount(0);
 });

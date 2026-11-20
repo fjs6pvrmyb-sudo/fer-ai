@@ -38,9 +38,24 @@ export async function requestStructured(
       output: response.usage.output_tokens,
     };
     let plan: unknown = null;
-    if (response.status === "completed") {
+    // Responses can include reasoning alongside the single assistant message.
+    // A refusal, partial message or unexpected output must not become a plan.
+    const messages = response.output.filter(
+      (item) => item.type !== "reasoning",
+    );
+    const message = messages[0];
+    const content = message?.type === "message" ? message.content[0] : null;
+    if (
+      response.status === "completed" &&
+      messages.length === 1 &&
+      message.type === "message" &&
+      message.role === "assistant" &&
+      message.status === "completed" &&
+      message.content.length === 1 &&
+      content?.type === "output_text"
+    ) {
       try {
-        plan = JSON.parse(response.output_text);
+        plan = JSON.parse(content.text);
       } catch {
         /* The caller rejects unusable plans. */
       }

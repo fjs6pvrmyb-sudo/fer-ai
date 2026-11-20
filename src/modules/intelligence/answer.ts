@@ -24,6 +24,7 @@ type Indicator = {
 type Link = { label: string; href: string };
 
 export type Answer = {
+  retryable?: boolean;
   organization: string;
   periods: Period[];
   message: string;

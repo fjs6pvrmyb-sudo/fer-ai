@@ -19,10 +19,19 @@ export default async function Dashboard({
 }) {
   const { org } = await params;
   const { client, organization, role } = await organizationAccess(org);
+  const managerial = canManageOperations(role);
   const newSale = (
-    <Link className="button primary" href={`/empresas/${org}/ventas/nueva`}>
-      <Icon name="plus" size={18} /> Registrar venta
-    </Link>
+    <div className="intelligence-sources">
+      <Link className="button primary" href={`/empresas/${org}/ventas/nueva`}>
+        <Icon name="plus" size={18} /> Registrar venta
+      </Link>
+      <Link
+        className="button secondary"
+        href={`/empresas/${org}/${managerial ? "intelligence" : "ventas/conversacional"}`}
+      >
+        Preparar venta con FER
+      </Link>
+    </div>
   );
   const products = await catalog(client, org, true);
   const currency = (amount: string) =>
@@ -34,7 +43,7 @@ export default async function Dashboard({
         description={`Resumen operativo de ${organization.name}.`}
         action={newSale}
       />
-      {canManageOperations(role) && (
+      {managerial && (
         <ManagementDashboard
           client={client}
           organization={organization}

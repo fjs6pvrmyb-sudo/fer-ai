@@ -149,6 +149,27 @@ describe("Captura conversacional de ventas", () => {
     expect(quote(own, coffee).review).toBeNull();
   });
 
+  it("cotiza un servicio con el mismo núcleo, en USD y con medios propios", () => {
+    const services = [product(5, "Consulta técnica", "7500")];
+    const organization = {
+      currency: "USD",
+      scale: 2,
+      conversational_payment_methods: ["card"],
+    } satisfies Parameters<typeof applyExtraction>[2];
+    const question =
+      "Vendí una consulta técnica. Me pagaron 20 USD con tarjeta";
+    const plan = extraction.parse(demoSaleExtraction(question, false));
+    expect(extractedLiteralsValid(question, plan)).toBe(true);
+    const draft = applyExtraction(plan, null, organization, services);
+    expect(previewDraft(uuid(80), draft, services, organization)).toMatchObject(
+      {
+        quote: { total: "7500", paid: "2000", balance: "5500" },
+        review: { payments: [{ method: "card", amount_minor: "2000" }] },
+        problems: [],
+      },
+    );
+  });
+
   it("marca cantidades inválidas y pagos que superan la venta", () => {
     expect(quantityValue("cero")).toBeNull();
     expect(quantityValue("1001")).toBeNull();

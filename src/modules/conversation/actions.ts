@@ -34,6 +34,7 @@ type TurnResult = {
   message: string;
   draft?: DraftView | null;
   answer?: Answer;
+  retryable?: boolean;
 };
 type DraftResult = { message: string; draft?: DraftView | null };
 
@@ -119,7 +120,7 @@ export async function sendConversation(
     p_model: config.mode === "demo" ? "feria-sales-demo-v1" : config.model,
   });
   if (reservation.error || typeof reservation.data !== "string")
-    return failure(reservation.error?.message);
+    return { ...failure(reservation.error?.message), retryable: true };
 
   let status = "query_error";
   let intent: string | null = null;
@@ -187,6 +188,7 @@ export async function sendConversation(
   } catch (error) {
     status = error instanceof ProviderFailure ? error.reason : "query_error";
     return {
+      retryable: true,
       message:
         status === "provider_timeout"
           ? "La interpretación tardó demasiado. Intentá de nuevo o usá el formulario manual."

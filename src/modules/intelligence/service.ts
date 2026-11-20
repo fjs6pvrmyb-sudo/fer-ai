@@ -55,7 +55,10 @@ export async function runIntelligence(
       status === "provider_timeout"
         ? "El asistente tardó demasiado. Probá de nuevo o consultá el dashboard."
         : "El proveedor del asistente no está disponible. Podés seguir usando el dashboard y los registros.";
-    return { answer: basicAnswer(organization.name, message), status };
+    return {
+      answer: { ...basicAnswer(organization.name, message), retryable: true },
+      status,
+    };
   }
 
   const plan = queryPlan.safeParse(interpreted.plan);

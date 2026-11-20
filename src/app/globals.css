@@ -839,6 +839,7 @@ label {
 }
 
 .intelligence-layout,
+.intelligence-outcome,
 .intelligence-thread,
 .intelligence-turn {
   display: grid;
@@ -846,7 +847,30 @@ label {
 }
 
 .intelligence-layout {
-  max-width: 56rem;
+  align-items: start;
+  max-width: 80rem;
+}
+
+.intelligence-outcome {
+  min-width: 0;
+  scroll-margin-block-start: 1rem;
+}
+
+.intelligence-return {
+  justify-self: start;
+  min-height: 44px;
+  padding-inline: 0.25rem;
+}
+
+@media (min-width: 78rem) {
+  .intelligence-layout {
+    grid-template-columns: minmax(17rem, 1fr) minmax(0, 2fr);
+  }
+
+  .intelligence-composer {
+    position: sticky;
+    top: 1rem;
+  }
 }
 
 .intelligence-mode {
@@ -907,18 +931,25 @@ label {
 }
 
 .intelligence-suggestions {
-  margin-bottom: 1rem;
+  margin-top: 0.65rem;
 }
 .intelligence-suggestions button {
   text-align: start;
 }
-.intelligence-period {
-  border: 0;
-  padding: 0;
+.intelligence-period,
+.intelligence-examples {
   min-width: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 0.65rem;
 }
-.intelligence-period legend {
+.intelligence-examples {
+  margin-top: 0.8rem;
+}
+.intelligence-period summary,
+.intelligence-examples summary {
   font-weight: 650;
+  cursor: pointer;
+  min-height: 2rem;
 }
 .intelligence-period p {
   margin: 0.2rem 0 0.55rem;
@@ -942,6 +973,10 @@ label {
 
 .sale-conversation-draft header h2 {
   margin-block: 0.5rem 0.25rem;
+}
+
+.sale-conversation-draft strong {
+  overflow-wrap: anywhere;
 }
 
 .sale-conversation-draft ul {

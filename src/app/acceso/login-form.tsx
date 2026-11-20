@@ -15,7 +15,7 @@ export function LoginForm({ configured }: { configured: boolean }) {
           name="email"
           type="email"
           autoComplete="username"
-          placeholder="nombre@empresa.com"
+          placeholder="nombre@empresa.example"
           required
         />
       </label>
