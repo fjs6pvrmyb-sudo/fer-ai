@@ -19,3 +19,5 @@
 **Condición del entorno.** El control de salud interno de GoTrue recibió HTTP 403 del proxy de contenedores. La solicitud directa a `/auth/v1/health` respondió HTTP 200. Las pruebas se ejecutaron después de `db:reset` y `demo:seed` con el servicio real. El README documenta el arranque correspondiente.
 
 **Uso de IA.** Codex generó el código, las migraciones, las pruebas y la documentación y ejecutó su verificación. La aplicación todavía carece de un asistente conectado a OpenAI. Los cobros posteriores, cierres, compensaciones y conciliación quedan descritos en [el documento de continuidad](continuidad.md).
+
+**Estabilidad del arranque de desarrollo.** `next.config.ts` deshabilita la edición automática de `AGENTS.md` por Next.js. Se comprobó que `npm run dev` respondió con HTTP 200 en `/acceso` y preservó el archivo de instrucciones.

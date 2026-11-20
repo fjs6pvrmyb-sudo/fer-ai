@@ -65,4 +65,4 @@ Si Chromium ya está instalado, podés usar `FERIA_CHROMIUM_PATH=/ruta/a/chromiu
 | `supabase/migrations/` | Integridad relacional, RLS, permisos y operaciones transaccionales.           |
 | `scripts/` y `tests/`  | Provisionamiento ficticio y pruebas unitarias, de integración y de navegador. |
 
-Consultá [el diseño de continuidad](docs/continuidad.md) y [las reglas del repositorio](AGENTS.md).
+Consultá [el diseño de continuidad](docs/continuidad.md), [las reglas del repositorio](AGENTS.md) y [la evidencia previa al hackathon](docs/evidencia-hackathon.md).
