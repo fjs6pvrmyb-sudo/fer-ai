@@ -43,3 +43,12 @@
 - **Pruebas.** Build, TypeScript y lint aprobados. Pasaron 11 pruebas Vitest, 15 de integración con PostgreSQL y Auth, 2 de reversión transaccional de fases anteriores y 5 de Playwright. Las pruebas nuevas incluyen ventas y cobros concurrentes con el cierre, revisión desactualizada, conteo cero y pendiente, sesión expirada, aislamiento y recorrido móvil.
 - **Capturas.** Playwright genera `cierre-operativo-movil.png`, `conciliacion-movil.png` y `dashboard-gerencial-movil.png` en `test-results/`, con fechas controladas y datos ficticios.
 - **Uso de IA.** Codex implementó las migraciones, las pantallas, las pruebas y la documentación y ejecutó la verificación local. Los ajustes históricos y la integración de IA en la aplicación siguen pendientes.
+
+## Fase 4A · FER AI Intelligence
+
+**Trabajo previo al evento.** Commit `2fe860af88de49bd8881fc24f85b77395f60cf2c` en `work`, registrado el 19 de noviembre de 2026 a las 23:13 en Costa Rica (UTC−06:00).
+
+- **Consulta autorizada.** `src/modules/intelligence` interpreta preguntas con un plan cerrado, valida fechas y alcance y prepara respuestas con indicadores y fuentes. La migración `20261120000400_intelligence.sql` incorpora el ranking acotado, la cuota transaccional por actor y el registro sin texto de conversaciones. Se reaplicaron las cinco migraciones desde cero.
+- **Demostración.** Playwright en Chromium móvil consultó ventas por ₡5.000 y cobros por SINPE por ₡2.000 en Panadería Demo. Encontró un cobro pendiente de verificar. Cafetería Demo devolvió sus propios ₡1.800 en ventas y ₡1.000 cobrados. La prueba rechazó la consulta cruzada, verificó el cambio de contexto y confirmó que el dashboard siguió disponible tras simular una interrupción. Genera `intelligence-movil.png` en `test-results/`.
+- **Resultados.** Pasaron TypeScript, lint y build, 25 pruebas Vitest, 18 de integración con PostgreSQL y Auth, 2 de reversión SQL y 8 recorridos Playwright en total. La auditoría npm de dependencias de producción reportó 0 vulnerabilidades. El recorrido deshabilitado se ejecutó por separado de la suite demo.
+- **Uso de IA.** Codex generó la implementación y ejecutó sus verificaciones. La interpretación en la demo es determinista y las cifras salen de PostgreSQL. El adaptador OpenAI usa SDK 7.62.0 y Responses API con Structured Outputs. El entorno carecía de configuración autorizada para una llamada externa y queda pendiente esa verificación.
