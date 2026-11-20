@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Icon, type IconName } from "./icon";
 
 export function Navigation({
@@ -14,6 +14,7 @@ export function Navigation({
 }) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
+  const menu = useRef<HTMLButtonElement>(null);
   const base = `/empresas/${org}`;
   const sections: { href: string; label: string; icon: IconName }[] = [
     { href: base, label: "Inicio", icon: "grid" },
@@ -25,14 +26,23 @@ export function Navigation({
     sections.splice(
       3,
       0,
-      { href: `${base}/intelligence`, label: "Preguntale a FER", icon: "grid" },
+      { href: `${base}/intelligence`, label: "Preguntale a FER", icon: "chat" },
       { href: `${base}/jornadas`, label: "Jornadas", icon: "receipt" },
       { href: `${base}/conciliacion`, label: "Conciliación", icon: "wallet" },
     );
   }
   return (
-    <div className="workspace-navigation">
+    <div
+      className="workspace-navigation"
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && open) {
+          setOpen(false);
+          menu.current?.focus();
+        }
+      }}
+    >
       <button
+        ref={menu}
         type="button"
         className="button mobile-menu"
         aria-controls="workspace-links"

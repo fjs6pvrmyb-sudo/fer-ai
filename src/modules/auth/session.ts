@@ -24,10 +24,15 @@ export async function database() {
   });
 }
 
-export const requireSession = cache(async () => {
-  if (!supabaseConfig()) redirect("/acceso");
+export const currentSession = cache(async () => {
+  if (!supabaseConfig()) return null;
   const client = await database();
   const { data, error } = await client.auth.getUser();
-  if (error || !data.user) redirect("/acceso");
-  return { client, user: data.user };
+  return error || !data.user ? null : { client, user: data.user };
 });
+
+export async function requireSession() {
+  const session = await currentSession();
+  if (!session) redirect("/acceso");
+  return session;
+}

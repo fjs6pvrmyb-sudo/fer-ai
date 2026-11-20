@@ -1,18 +1,34 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Brand, Icon } from "@/components/icon";
 import { supabaseConfig } from "@/modules/auth/config";
+import { currentSession } from "@/modules/auth/session";
+import { companySelectionPath } from "@/modules/auth/destination";
 import { LoginForm } from "./login-form";
 
 export const metadata = { title: "Acceso" };
 
-export default function AccessPage() {
+export default async function AccessPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ destino?: string | string[] }>;
+}) {
+  const forSale = (await searchParams).destino === "venta";
+  if (forSale && (await currentSession())) redirect(companySelectionPath(true));
   return (
     <main id="contenido" tabIndex={-1} className="login-layout">
       <section className="login-main">
-        <Brand />
+        <Link href="/" aria-label="FER AI, inicio">
+          <Brand />
+        </Link>
         <div className="login-content">
           <h1>Iniciá sesión</h1>
-          <p>Ingresá con tu cuenta para acceder a tus empresas.</p>
-          <LoginForm configured={Boolean(supabaseConfig())} />
+          <p>
+            {forSale
+              ? "Ingresá con tu cuenta para registrar una venta."
+              : "Ingresá con tu cuenta para acceder a tus empresas."}
+          </p>
+          <LoginForm configured={Boolean(supabaseConfig())} forSale={forSale} />
         </div>
         <span className="login-footer">FER AI · Gestión empresarial</span>
       </section>

@@ -11,8 +11,13 @@ import {
 
 export const metadata = { title: "Elegí una empresa" };
 
-export default async function CompaniesPage() {
+export default async function CompaniesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ destino?: string | string[] }>;
+}) {
   const { client, user } = await requireSession();
+  const forSale = (await searchParams).destino === "venta";
   const [companies, memberships] = await Promise.all([
     client
       .from("organizations")
@@ -38,7 +43,9 @@ export default async function CompaniesPage() {
   return (
     <>
       <header className="selection-header">
-        <Brand />
+        <Link href="/" aria-label="FER AI, inicio">
+          <Brand />
+        </Link>
         <form action={signOut}>
           <button className="button secondary">
             <Icon name="exit" size={17} /> Cerrar sesión
@@ -48,14 +55,18 @@ export default async function CompaniesPage() {
       <main id="contenido" tabIndex={-1} className="standalone selection">
         <PageHeading
           title="Elegí una empresa"
-          description="Seleccioná el espacio de trabajo que querés abrir."
+          description={
+            forSale
+              ? "Seleccioná la empresa en la que querés registrar la venta."
+              : "Seleccioná el espacio de trabajo que querés abrir."
+          }
         />
         {available.length ? (
           <div className="company-grid">
             {available.map((company) => (
               <Link
                 key={company.id}
-                href={`/empresas/${company.id}`}
+                href={`/empresas/${company.id}${forSale ? "/ventas/nueva" : ""}`}
                 className="surface company-card"
               >
                 <span className="icon-tile">

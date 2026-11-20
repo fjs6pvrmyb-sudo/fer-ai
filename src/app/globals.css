@@ -4,8 +4,10 @@
   color-scheme: light;
   --ink: #142137;
   --muted: #536279;
-  --nav: #111d32;
-  --paper: #f7f8fa;
+  --navy: #0f2a5c;
+  --mint: #2dd4a7;
+  --nav: var(--navy);
+  --paper: #f8fafc;
   --surface: #ffffff;
   --line: #dfe5ee;
   --blue: #234edc;
@@ -1032,5 +1034,59 @@ label {
 
   .conversation-row > p {
     grid-column: 1 / -1;
+  }
+}
+
+.workspace-banner {
+  border: 1px solid #cadbed;
+  border-radius: var(--radius);
+  background: linear-gradient(112deg, #eef5fe, var(--surface) 66%);
+  padding: clamp(1rem, 3vw, 1.6rem);
+}
+.workspace-banner .page-heading {
+  margin: 0;
+}
+.workspace-banner h1 {
+  color: var(--navy);
+}
+.workspace-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+.sidebar .company-symbol {
+  background: #234880;
+  color: #b5f4e4;
+}
+.sidebar .brand-ai {
+  color: var(--mint);
+}
+.sidebar .nav-links a[aria-current] {
+  background: var(--mint);
+  color: var(--navy);
+}
+.intelligence-composer-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.intelligence-composer-header p {
+  font-size: 0.85rem;
+}
+.intelligence-question {
+  background: var(--navy);
+  color: white;
+}
+.sale-conversation-draft {
+  border-top: 3px solid var(--mint);
+}
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .company-card,
+  .intelligence-layout * {
+    transition: none;
+    animation: none;
+    scroll-behavior: auto;
   }
 }

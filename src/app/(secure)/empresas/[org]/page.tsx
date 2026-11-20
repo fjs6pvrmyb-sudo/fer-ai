@@ -21,7 +21,7 @@ export default async function Dashboard({
   const { client, organization, role } = await organizationAccess(org);
   const managerial = canManageOperations(role);
   const newSale = (
-    <div className="intelligence-sources">
+    <div className="workspace-actions">
       <Link className="button primary" href={`/empresas/${org}/ventas/nueva`}>
         <Icon name="plus" size={18} /> Registrar venta
       </Link>
@@ -38,11 +38,13 @@ export default async function Dashboard({
     formatMoney(amount, organization.currency, organization.scale);
   return (
     <>
-      <PageHeading
-        title="Inicio"
-        description={`Resumen operativo de ${organization.name}.`}
-        action={newSale}
-      />
+      <div className="workspace-banner">
+        <PageHeading
+          title="Inicio"
+          description={`Resumen operativo de ${organization.name}.`}
+          action={newSale}
+        />
+      </div>
       {managerial && (
         <ManagementDashboard
           client={client}

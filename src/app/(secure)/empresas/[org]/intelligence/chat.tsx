@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { Submit } from "@/components/form";
+import { Icon } from "@/components/icon";
 import type { Answer } from "@/modules/intelligence/answer";
 import type { DraftKey, DraftView } from "@/modules/conversation/contract";
 import { DraftPanel, type DraftControls } from "./draft-panel";
@@ -192,6 +193,17 @@ export function Chat({
         className="surface panel intelligence-composer"
         aria-label="Enviar a FER"
       >
+        <header className="intelligence-composer-header">
+          <span className="icon-tile teal">
+            <Icon name="chat" size={19} />
+          </span>
+          <div>
+            <h2>
+              {managerial ? "Asistente de empresa" : "Asistente de ventas"}
+            </h2>
+            <p>{organization}</p>
+          </div>
+        </header>
         <form className="form-stack" action={send}>
           <label>
             Tu mensaje

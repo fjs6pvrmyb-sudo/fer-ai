@@ -5,8 +5,14 @@ import { signIn } from "@/modules/auth/actions";
 import { FormFeedback, Submit } from "@/components/form";
 import { Icon } from "@/components/icon";
 
-export function LoginForm({ configured }: { configured: boolean }) {
-  const [message, run] = useActionState(signIn, "");
+export function LoginForm({
+  configured,
+  forSale,
+}: {
+  configured: boolean;
+  forSale: boolean;
+}) {
+  const [message, run] = useActionState(signIn.bind(null, forSale), "");
   return (
     <form className="form-stack login-form" action={run}>
       <label>

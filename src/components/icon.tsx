@@ -1,6 +1,9 @@
 const paths = {
   grid: "M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z",
   box: "m12 3 9 5v8l-9 5-9-5V8l9-5z M3 8l9 5 9-5 M12 13v8 M7.5 5.5l9 5",
+  chat: "M20 16V5H4v13l4-2h12z M8 9h8 M8 12h5",
+  shield:
+    "M12 2 4.5 5v5.5c0 5 3.2 8.8 7.5 11.5 4.3-2.7 7.5-6.5 7.5-11.5V5L12 2z M8.5 11.5l2.3 2.3 4.7-5",
   receipt: "M6 3h12v18l-3-2-3 2-3-2-3 2V3z M9 8h6 M9 12h6",
   settings: "M4 7h16 M4 17h16 M8 4v6 M16 14v6",
   plus: "M12 5v14 M5 12h14",

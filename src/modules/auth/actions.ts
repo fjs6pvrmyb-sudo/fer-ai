@@ -4,8 +4,13 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { database } from "./session";
 import { supabaseConfig } from "./config";
+import { companySelectionPath } from "./destination";
 
-export async function signIn(_: string, form: FormData): Promise<string> {
+export async function signIn(
+  forSale: boolean,
+  _: string,
+  form: FormData,
+): Promise<string> {
   if (!supabaseConfig())
     return "El servicio de acceso todavía no está configurado.";
   const input = z
@@ -21,7 +26,7 @@ export async function signIn(_: string, form: FormData): Promise<string> {
     return error.status && error.status < 500
       ? "El correo o la contraseña no son válidos."
       : "El servicio de acceso no respondió. Intentá de nuevo.";
-  redirect("/empresas");
+  redirect(companySelectionPath(forSale === true));
 }
 
 export async function signOut() {

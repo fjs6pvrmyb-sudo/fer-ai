@@ -20,7 +20,7 @@ npm run demo:seed
 npm run dev -- --hostname 127.0.0.1
 ```
 
-Abrí `http://127.0.0.1:3000/acceso` e ingresá con la contraseña que elegiste. Las cuentas ficticias son:
+Abrí `http://127.0.0.1:3000` para ver la landing, o entrá por `/acceso` con la contraseña que elegiste. `/empresa` lleva al selector de empresas y `/colaborador` a la selección de empresa para registrar ventas. Ambos usan la sesión de Supabase y las membresías existentes. Las cuentas ficticias son:
 
 | Correo                    | Panadería Demo | Cafetería Demo |
 | ------------------------- | -------------- | -------------- |
@@ -72,6 +72,7 @@ Para pagos divididos, prepará una venta de ₡5.000 y agregá «Me pagaron dos 
 - [Validación de OpenAI y control de consumo](docs/openai-validacion.md)
 - [Configuración y recuperación de una demo aislada](docs/demo-alojada.md)
 - [Contrato fiscal Fase 6A y prueba sin conexión](docs/fase-6a-fiscal.md)
+- [Auditoría e integración de FER AI Web con Core](docs/integracion-web-core.md)
 
 ### Supabase en el entorno administrado
 
