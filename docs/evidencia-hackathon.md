@@ -21,3 +21,14 @@
 **Uso de IA.** Codex generó el código, las migraciones, las pruebas y la documentación y ejecutó su verificación. La aplicación todavía carece de un asistente conectado a OpenAI. Los cobros posteriores, cierres, compensaciones y conciliación quedan descritos en [el documento de continuidad](continuidad.md).
 
 **Estabilidad del arranque de desarrollo.** `next.config.ts` deshabilita la edición automática de `AGENTS.md` por Next.js. Se comprobó que `npm run dev` respondió con HTTP 200 en `/acceso` y preservó el archivo de instrucciones.
+
+## Fase 2 · Cobros posteriores
+
+**Trabajo previo al evento.** Commit `4ac483dae95bd37cd3da6b15a1d88f1103a19f4e` en `work`, registrado el 19 de noviembre de 2026 a las 22:37 en Costa Rica (UTC−06:00).
+
+- **Base de datos.** `20261120000200_collect_payment.sql` agrega el RPC `collect_payment` y la persistencia de solicitudes idempotentes. El reinicio de Supabase local aplicó las tres migraciones desde una base limpia.
+- **Escenario de dos jornadas.** `scripts/test-collections.mjs` comprobó una venta de ₡5.000 con ₡2.000 por SINPE en la jornada histórica controlada y ₡3.000 en la jornada de cobro. Quedaron una venta, dos movimientos y saldo de ₡0. Las dos solicitudes simultáneas produjeron un éxito y un rechazo por saldo insuficiente. Un reintento devolvió el mismo identificador de cobro.
+- **Atomicidad y permisos.** La prueba SQL forzó un fallo de auditoría y verificó la reversión del pago y la solicitud. Las pruebas con Auth y PostgreSQL verificaron el rechazo de roles insuficientes, tokens inválidos, referencias ajenas y escrituras directas.
+- **Interfaz.** `tests/e2e/collection.spec.ts` verificó el error de saldo, el registro del cobro y la actualización del historial desde Chromium móvil. La captura local `cobro-posterior-movil.png` se genera dentro de `test-results/`.
+- **Resultados.** Build, TypeScript y lint aprobados. Pasaron 11 pruebas Vitest, 10 de integración con Auth/PostgreSQL (6 existentes y 4 de cobros), 2 comprobaciones de reversión SQL y 4 pruebas Playwright.
+- **Uso de IA.** Codex implementó el RPC, la interfaz, las pruebas y la documentación y ejecutó las verificaciones locales.
