@@ -2,6 +2,10 @@
 
 Aplicación web multiempresa para registrar ventas y pagos. Esta versión incluye autenticación con Supabase, catálogo con precios vigentes, venta manual y conversacional, cobros posteriores, cierres diarios, conciliación documental y dashboard gerencial. La Panadería y Business comparten el mismo núcleo y se configuran por organización.
 
+## Seguridad y OWASP
+
+FER AI adopta [OWASP ASVS 5.0.0 como línea base de verificación](docs/security/owasp-asvs-5.md) y [OWASP GenAI/LLM Top 10:2026](https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/) para el asistente. Hay controles iniciales y pruebas, **pero no existe una certificación OWASP ni un pentest integral aprobado**. La matriz distingue evidencia, pendientes y condiciones antes de exponer una preview o usar datos empresariales reales.
+
 ## Desarrollo local
 
 Requisitos: Node 24, npm y Docker en ejecución. Usá el checkout existente. La versión de la CLI de Supabase está fijada en el lockfile. Si el directorio personal es de solo lectura, usá `npm_config_cache=/tmp/feria-npm npm ci` y ejecutá los comandos de Supabase con `DO_NOT_TRACK=1` para desactivar su telemetría.
