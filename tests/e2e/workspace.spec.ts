@@ -98,7 +98,9 @@ for (const viewport of [
       page.getByText("Café filtrado", { exact: true }),
     ).toBeVisible();
     await page.goto(`/empresas/${coffee}/ventas`);
-    await expect(page.getByRole("heading", { name: "Ventas" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Ventas", exact: true }),
+    ).toBeVisible();
     await expect(
       page.locator(`a[href="/empresas/${coffee}/ventas/${id}"]`),
     ).toHaveCount(0);
