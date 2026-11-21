@@ -59,14 +59,12 @@ describe("Supabase local con Auth, PostgreSQL y RLS", () => {
   it("bloquea anónimos y separa catálogos entre usuarios", async () => {
     assert.ok((await anonymous.rpc("confirm_sale", operation())).error);
     assert.ok((await anonymous.from("catalog").select("id")).error);
-    assert.equal(
-      success(
-        await operator
-          .from("catalog")
-          .select("id")
-          .eq("organization_id", ids.bakery),
-      ).length,
-      3,
+    const catalog = success(
+      await operator.from("catalog").select("id,organization_id"),
+    );
+    assert.ok(catalog.some(({ id }) => id === ids.bread));
+    assert.ok(
+      catalog.every(({ organization_id }) => organization_id === ids.bakery),
     );
     assert.deepEqual(
       success(

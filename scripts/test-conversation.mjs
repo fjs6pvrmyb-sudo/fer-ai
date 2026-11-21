@@ -1,5 +1,4 @@
 import { strict as assert } from "node:assert";
-import { execFileSync } from "node:child_process";
 import { createHmac, randomUUID } from "node:crypto";
 import { after, it } from "node:test";
 import {
@@ -7,6 +6,7 @@ import {
   ids,
   localClient,
   localConfig,
+  localJwtSecret,
   signedIn,
 } from "./local-demo.mjs";
 
@@ -251,13 +251,6 @@ it("impide confirmar borradores vencidos y rechaza una sesión expirada", async 
     [],
   );
 
-  const status = JSON.parse(
-    execFileSync("./node_modules/.bin/supabase", ["status", "-o", "json"], {
-      encoding: "utf8",
-      env: { ...process.env, DO_NOT_TRACK: "1" },
-      stdio: ["ignore", "pipe", "ignore"],
-    }),
-  );
   const segment = (value) =>
     Buffer.from(JSON.stringify(value)).toString("base64url");
   const actor = ok(await owner.auth.getUser()).user;
@@ -267,7 +260,7 @@ it("impide confirmar borradores vencidos y rechaza una sesión expirada", async 
     aud: "authenticated",
     exp: Math.floor(Date.now() / 1000) - 3600,
   })}`;
-  const signature = createHmac("sha256", status.JWT_SECRET)
+  const signature = createHmac("sha256", localJwtSecret())
     .update(body)
     .digest("base64url");
   const expired = await confirm(

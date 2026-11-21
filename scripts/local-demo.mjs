@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { execFileSync } from "node:child_process";
 
 export const ids = {
   bakery: "10000000-0000-4000-8000-000000000001",
@@ -42,6 +43,22 @@ export function localClient(url, key) {
   return createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
+}
+
+export function localJwtSecret() {
+  localConfig();
+  const secret =
+    process.env.FERIA_TEST_JWT_SECRET ||
+    JSON.parse(
+      execFileSync("./node_modules/.bin/supabase", ["status", "-o", "json"], {
+        encoding: "utf8",
+        env: { ...process.env, DO_NOT_TRACK: "1" },
+        stdio: ["ignore", "pipe", "ignore"],
+      }),
+    ).JWT_SECRET;
+  if (!secret)
+    throw new Error("Falta el secreto JWT de la instancia local desechable.");
+  return secret;
 }
 
 export async function signedIn(email, config = localConfig()) {

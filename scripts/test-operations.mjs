@@ -1,5 +1,4 @@
 import { strict as assert } from "node:assert";
-import { execFileSync } from "node:child_process";
 import { createHmac, randomUUID } from "node:crypto";
 import { after, it } from "node:test";
 import {
@@ -7,6 +6,7 @@ import {
   ids,
   localClient,
   localConfig,
+  localJwtSecret,
   signedIn,
 } from "./local-demo.mjs";
 
@@ -457,18 +457,11 @@ it("otra organización y una sesión expirada no pueden consultar ni cerrar la j
     [],
   );
 
-  const status = JSON.parse(
-    execFileSync("./node_modules/.bin/supabase", ["status", "-o", "json"], {
-      encoding: "utf8",
-      env: { ...process.env, DO_NOT_TRACK: "1" },
-      stdio: ["ignore", "pipe", "ignore"],
-    }),
-  );
   const segment = (value) =>
     Buffer.from(JSON.stringify(value)).toString("base64url");
   const expired = Math.floor(Date.now() / 1000) - 3600;
   const body = `${segment({ alg: "HS256", typ: "JWT" })}.${segment({ sub: adminId, role: "authenticated", aud: "authenticated", exp: expired })}`;
-  const signed = createHmac("sha256", status.JWT_SECRET)
+  const signed = createHmac("sha256", localJwtSecret())
     .update(body)
     .digest("base64url");
   const anonymous = localClient(config.url, config.key);
