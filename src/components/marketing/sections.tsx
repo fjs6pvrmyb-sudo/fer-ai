@@ -114,7 +114,7 @@ export function Features() {
 
 export function HowItWorks() {
   return (
-    <section id="como-funciona" className="marketing-section">
+    <section id="como-funciona" className="marketing-section" tabIndex={-1}>
       <div className="marketing-shell">
         <div className="marketing-section-copy">
           <h2>Cómo funciona</h2>
@@ -158,7 +158,7 @@ export function Industries() {
 
 export function Security() {
   return (
-    <section id="seguridad" className="marketing-section">
+    <section id="seguridad" className="marketing-section" tabIndex={-1}>
       <div className="marketing-shell">
         <div className="marketing-security marketing-split">
           <div className="marketing-section-copy">
@@ -183,7 +183,7 @@ export function Security() {
 
 export function FAQ() {
   return (
-    <section id="faq" className="marketing-section marketing-faq">
+    <section id="faq" className="marketing-section marketing-faq" tabIndex={-1}>
       <div className="marketing-shell marketing-split">
         <div className="marketing-section-copy">
           <h2>Preguntas frecuentes</h2>
@@ -203,7 +203,7 @@ export function FAQ() {
 
 export function EarlyAccess() {
   return (
-    <section id="espera" className="marketing-section">
+    <section id="espera" className="marketing-section" tabIndex={-1}>
       <div className="marketing-shell">
         <div className="marketing-early marketing-split">
           <div className="marketing-section-copy">

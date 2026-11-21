@@ -12,6 +12,8 @@
   --line: #dfe5ee;
   --blue: #234edc;
   --blue-dark: #1a3cb3;
+  --focus-ring: var(--blue);
+  --control-line: #74839a;
   --teal: #0a6655;
   --amber: #80530c;
   --radius: 16px;
@@ -36,7 +38,7 @@ button:disabled {
   opacity: 0.65;
 }
 :focus-visible {
-  outline: 3px solid #5979f8;
+  outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
 h1,
@@ -75,7 +77,7 @@ select {
   min-width: 0;
   min-height: 44px;
   background: var(--surface);
-  border: 1px solid #c5cfdf;
+  border: 1px solid var(--control-line);
   border-radius: 10px;
   padding: 0.65rem 0.75rem;
   color: var(--ink);
@@ -356,6 +358,7 @@ label {
   min-height: 100dvh;
 }
 .sidebar {
+  --focus-ring: var(--mint);
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
@@ -494,6 +497,38 @@ label {
   margin-inline: auto;
   max-width: 1380px;
   padding: clamp(1rem, 4vw, 3rem);
+}
+
+@media (max-width: 799px) {
+  .workspace-identity {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .sign-out {
+    grid-row: 2;
+    align-self: start;
+  }
+
+  .nav-links {
+    grid-row: 3;
+  }
+
+  .mobile-menu,
+  .sign-out button {
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 639px) {
+  .button,
+  input:not([type="checkbox"]),
+  select,
+  .company-switch,
+  .nav-links a,
+  .check-label {
+    min-height: 48px;
+  }
 }
 .page-heading {
   display: flex;
@@ -834,7 +869,7 @@ label {
 
 .operations-notes {
   width: 100%;
-  border: 1px solid #c5cfdf;
+  border: 1px solid var(--control-line);
   border-radius: 10px;
   padding: 0.65rem 0.75rem;
   resize: vertical;
@@ -860,7 +895,7 @@ label {
 
 .intelligence-return {
   justify-self: start;
-  min-height: 44px;
+  min-height: 48px;
   padding-inline: 0.25rem;
 }
 
@@ -951,7 +986,7 @@ label {
 .intelligence-examples summary {
   font-weight: 650;
   cursor: pointer;
-  min-height: 2rem;
+  min-height: 48px;
 }
 .intelligence-period p {
   margin: 0.2rem 0 0.55rem;
@@ -1017,13 +1052,18 @@ label {
 
 .conversation-checkbox {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.55rem;
+  min-height: 48px;
 }
 
 .conversation-checkbox input {
-  width: auto;
+  accent-color: var(--blue);
+  flex: none;
+  width: 18px;
+  height: 18px;
   min-height: 0;
+  padding: 0;
 }
 
 @media (min-width: 48rem) {
@@ -1042,6 +1082,7 @@ label {
   border-radius: var(--radius);
   background: linear-gradient(112deg, #eef5fe, var(--surface) 66%);
   padding: clamp(1rem, 3vw, 1.6rem);
+  margin-block-end: 1rem;
 }
 .workspace-banner .page-heading {
   margin: 0;

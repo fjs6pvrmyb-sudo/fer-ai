@@ -62,7 +62,11 @@ export function ExamplePreview() {
 
 export function ProductDemo() {
   return (
-    <section id="demostracion" className="marketing-section marketing-demo">
+    <section
+      id="demostracion"
+      className="marketing-section marketing-demo"
+      tabIndex={-1}
+    >
       <div className="marketing-shell marketing-split">
         <div className="marketing-section-copy">
           <h2>Una venta, desde el mensaje hasta el saldo</h2>

@@ -67,6 +67,7 @@
   color: var(--navy);
 }
 .marketing-hero {
+  --focus-ring: var(--mint);
   color: white;
   background:
     radial-gradient(ellipse at 78% 36%, #245187 0%, transparent 53%),
@@ -215,6 +216,9 @@
   padding-block: clamp(2.65rem, 6vw, 5rem);
   scroll-margin-block-start: 5.3rem;
 }
+.marketing-section:focus-visible {
+  outline-offset: -3px;
+}
 .marketing-section-copy {
   max-width: 47ch;
 }
@@ -280,7 +284,7 @@
   padding-bottom: 0.6rem;
 }
 .marketing details summary {
-  min-height: 44px;
+  min-height: 48px;
   padding: 0.7rem 0;
 }
 .marketing-steps {

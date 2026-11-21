@@ -2,8 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Icon, type IconName } from "./icon";
+
+function focusWorkspace() {
+  document.getElementById("contenido")?.focus({ preventScroll: true });
+}
 
 export function Navigation({
   org,
@@ -15,6 +19,13 @@ export function Navigation({
   const path = usePathname();
   const [open, setOpen] = useState(false);
   const menu = useRef<HTMLButtonElement>(null);
+  const focusAfterNavigation = useRef(false);
+  useEffect(() => {
+    if (focusAfterNavigation.current) {
+      focusAfterNavigation.current = false;
+      focusWorkspace();
+    }
+  }, [path]);
   const base = `/empresas/${org}`;
   const sections: { href: string; label: string; icon: IconName }[] = [
     { href: base, label: "Inicio", icon: "grid" },
@@ -66,7 +77,19 @@ export function Navigation({
               aria-current={
                 current ? (path === href ? "page" : "location") : undefined
               }
-              onClick={() => setOpen(false)}
+              onClick={(event) => {
+                if (
+                  event.metaKey ||
+                  event.ctrlKey ||
+                  event.shiftKey ||
+                  event.altKey
+                )
+                  return;
+                setOpen(false);
+                if (!open || event.detail !== 0) return;
+                if (href === path) focusWorkspace();
+                else focusAfterNavigation.current = true;
+              }}
             >
               <Icon name={icon} size={19} /> {label}
             </Link>
