@@ -13,13 +13,18 @@ do $$
 declare
   org constant uuid := '10000000-0000-4000-8000-000000000001';
   actor uuid;
+  fixture_session constant uuid := gen_random_uuid();
   draft public.conversational_sale_drafts;
   reviewed_revision integer;
   sales_before bigint;
   payments_before bigint;
 begin
   select id into strict actor from auth.users where email = 'operador@feria.example';
-  perform set_config('request.jwt.claim.sub', actor::text, true);
+  insert into auth.sessions (id, user_id, created_at, updated_at)
+    values (fixture_session, actor, now(), now());
+  perform set_config('request.jwt.claims', jsonb_build_object(
+    'sub', actor, 'session_id', fixture_session, 'aud', 'authenticated'
+  )::text, true);
   draft := public.save_conversational_sale(org, null, null, '{}', null);
   draft := public.save_conversational_sale(org, draft.id, draft.revision, '{}',
     '{"lines":[{"product_id":"20000000-0000-4000-8000-000000000001","price_id":"30000000-0000-4000-8000-000000000001","quantity":1}],"payments":[{"method":"transfer","amount_minor":"200000"}]}');

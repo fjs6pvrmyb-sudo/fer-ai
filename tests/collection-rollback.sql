@@ -15,10 +15,15 @@ declare
   org constant uuid := '10000000-0000-4000-8000-000000000001';
   attempt_id constant uuid := gen_random_uuid();
   actor uuid;
+  fixture_session constant uuid := gen_random_uuid();
   sale uuid;
 begin
   select id into strict actor from auth.users where email = 'admin@feria.example';
-  perform set_config('request.jwt.claim.sub', actor::text, true);
+  insert into auth.sessions (id, user_id, created_at, updated_at)
+    values (fixture_session, actor, now(), now());
+  perform set_config('request.jwt.claims', jsonb_build_object(
+    'sub', actor, 'session_id', fixture_session, 'aud', 'authenticated'
+  )::text, true);
   sale := public.confirm_sale(org, gen_random_uuid(),
     '[{"product_id":"20000000-0000-4000-8000-000000000001","price_id":"30000000-0000-4000-8000-000000000001","quantity":1}]',
     '[{"method":"transfer","amount_minor":"200000"}]');

@@ -22,6 +22,8 @@ export async function signIn(
   if (!input.success) return "Ingresá tu correo y contraseña.";
   const client = await database();
   const { error } = await client.auth.signInWithPassword(input.data);
+  if (error?.status === 429)
+    return "Demasiados intentos de acceso. Esperá antes de intentar de nuevo.";
   if (error)
     return error.status && error.status < 500
       ? "El correo o la contraseña no son válidos."

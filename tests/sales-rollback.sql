@@ -15,11 +15,16 @@ declare
   org constant uuid := '10000000-0000-4000-8000-000000000001';
   request_id constant uuid := gen_random_uuid();
   actor uuid;
+  fixture_session constant uuid := gen_random_uuid();
   before_counts bigint[];
   after_counts bigint[];
 begin
   select id into strict actor from auth.users where email = 'operador@feria.example';
-  perform set_config('request.jwt.claim.sub', actor::text, true);
+  insert into auth.sessions (id, user_id, created_at, updated_at)
+    values (fixture_session, actor, now(), now());
+  perform set_config('request.jwt.claims', jsonb_build_object(
+    'sub', actor, 'session_id', fixture_session, 'aud', 'authenticated'
+  )::text, true);
 
   before_counts := array[
     (select count(*) from public.sales where organization_id = org),

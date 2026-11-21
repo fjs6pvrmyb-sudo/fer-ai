@@ -97,6 +97,7 @@ npm run test:collections
 npm run test:operations
 npm run test:intelligence
 npm run test:conversation
+npm run test:security
 npm run test:atomic
 npm run test:collection-atomic
 npm run test:conversation-atomic

@@ -21,5 +21,13 @@ describe("OWASP baseline: encabezados HTTP", () => {
     expect(headers.get("permissions-policy")).toContain("camera=()");
     expect(headers.get("permissions-policy")).toContain("microphone=()");
     expect(headers.get("permissions-policy")).toContain("geolocation=()");
+    expect(headers.get("content-security-policy")).toContain(
+      "frame-ancestors 'none'",
+    );
+    expect(headers.get("content-security-policy")).not.toContain("script-src");
+    expect(headers.get("content-security-policy-report-only")).toContain(
+      "script-src 'self'",
+    );
+    expect(config.poweredByHeader).toBe(false);
   });
 });
