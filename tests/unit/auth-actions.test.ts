@@ -16,7 +16,7 @@ it("comunica el límite del proveedor sin exponer su error interno", async () =>
   const form = new FormData();
   form.set("email", "demostracion@feria.example");
   form.set("password", "contraseña-ficticia");
-  expect(await signIn(false, "", form)).toBe(
+  expect(await signIn("", form)).toBe(
     "Demasiados intentos de acceso. Esperá antes de intentar de nuevo.",
   );
   expect(authenticate).toHaveBeenCalledTimes(1);

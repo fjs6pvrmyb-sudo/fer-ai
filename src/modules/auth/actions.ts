@@ -6,11 +6,10 @@ import { database } from "./session";
 import { supabaseConfig } from "./config";
 import { companySelectionPath } from "./destination";
 
-export async function signIn(
-  forSale: boolean,
-  _: string,
-  form: FormData,
-): Promise<string> {
+// Sin argumentos vinculados: un envío previo a la hidratación (MPA) con una
+// acción enlazada mediante bind() dejaba el SSR de useActionState en un bucle.
+export async function signIn(_: string, form: FormData): Promise<string> {
+  const forSale = form.get("destino") === "venta";
   if (!supabaseConfig())
     return "El servicio de acceso todavía no está configurado.";
   const input = z
@@ -28,7 +27,7 @@ export async function signIn(
     return error.status && error.status < 500
       ? "El correo o la contraseña no son válidos."
       : "El servicio de acceso no respondió. Intentá de nuevo.";
-  redirect(companySelectionPath(forSale === true));
+  redirect(companySelectionPath(forSale));
 }
 
 export async function signOut() {
