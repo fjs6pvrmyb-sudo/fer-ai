@@ -135,3 +135,42 @@ test("el formulario y el borrador tienen controles táctiles y un borde visible"
   const back = page.getByRole("button", { name: "Volver al mensaje" });
   expect((await back.boundingBox())!.height).toBeGreaterThanOrEqual(48);
 });
+
+test("la venta manual guía el foco de error, revisión y edición", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await openBakery(page);
+  await page.goto(bakery + "/ventas/nueva");
+  const product = page.getByLabel("Producto 1");
+  const review = page.getByRole("button", { name: "Revisar venta" });
+  await review.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("alert")).toHaveText(
+    "Seleccioná un producto en la línea 1.",
+  );
+  await expect(product).toBeFocused();
+  await expect(product).toHaveAttribute("aria-invalid", "true");
+  await expect(product).toHaveAccessibleDescription(
+    "Seleccioná un producto en la línea 1.",
+  );
+
+  const bread = "20000000-0000-4000-8000-000000000001";
+  await product.selectOption(bread);
+  await expect(product).not.toHaveAttribute("aria-invalid", "true");
+  await review.focus();
+  await page.keyboard.press("Enter");
+  await expect(
+    page.getByRole("heading", { name: "Revisión final" }),
+  ).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(
+    page.getByRole("button", { name: "Confirmar venta" }),
+  ).toBeFocused();
+
+  const edit = page.getByRole("button", { name: "Editar venta" });
+  await edit.focus();
+  await page.keyboard.press("Enter");
+  await expect(product).toBeFocused();
+  await expect(product).toHaveValue(bread);
+});

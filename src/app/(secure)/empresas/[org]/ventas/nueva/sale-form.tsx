@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
+import { useActionState, useEffect, useId, useRef, useState } from "react";
 import { FormFeedback, Submit } from "@/components/form";
 import { Icon } from "@/components/icon";
 import { type Product } from "@/modules/catalog/data";
@@ -40,12 +40,34 @@ export function SaleForm({
   ]);
   const [payments, setPayments] = useState<EditablePayment[]>([]);
   const [review, setReview] = useState<SaleDraft | null>(null);
-  const [validation, setValidation] = useState("");
+  const [validation, setValidation] = useState<{
+    message: string;
+    product?: number;
+  } | null>(null);
   const [state, run, pending] = useActionState(action, {});
   const nextKey = useRef(1);
+  const productFields = useRef(new Map<number, HTMLSelectElement>());
+  const reviewHeading = useRef<HTMLHeadingElement>(null);
+  const returningToEdit = useRef(false);
+  const feedbackId = useId();
   const byId = new Map(products.map((product) => [product.id, product]));
   const amount = (minor: bigint | string) =>
     formatMoney(minor, currency, scale);
+
+  useEffect(() => {
+    if (validation?.product !== undefined) {
+      productFields.current.get(validation.product)?.focus();
+    }
+  }, [validation]);
+
+  useEffect(() => {
+    if (review) {
+      reviewHeading.current?.focus();
+    } else if (returningToEdit.current) {
+      returningToEdit.current = false;
+      productFields.current.values().next().value?.focus();
+    }
+  }, [review]);
 
   const draftLines = lines.map((line) => ({
     product_id: line.product,
@@ -85,16 +107,27 @@ export function SaleForm({
       payments: draftPayments,
     });
     if (!draft.success) {
-      setValidation(
-        "Seleccioná un producto distinto en cada línea, revisá las cantidades y completá los pagos agregados.",
-      );
+      const missing = lines.findIndex((line) => !byId.has(line.product));
+      if (missing >= 0) {
+        setValidation({
+          message: `Seleccioná un producto en la línea ${missing + 1}.`,
+          product: lines[missing].key,
+        });
+      } else {
+        setValidation({
+          message:
+            "Seleccioná un producto distinto en cada línea, revisá las cantidades y completá los pagos agregados.",
+        });
+      }
       return;
     }
     if (!quote || quote.total === 0n) {
-      setValidation(issue || "Revisá los importes antes de continuar.");
+      setValidation({
+        message: issue || "Revisá los importes antes de continuar.",
+      });
       return;
     }
-    setValidation("");
+    setValidation(null);
     setReview(draft.data);
   }
 
@@ -126,16 +159,31 @@ export function SaleForm({
                   <label>
                     Producto {index + 1}
                     <select
+                      ref={(element) => {
+                        if (element)
+                          productFields.current.set(line.key, element);
+                        else productFields.current.delete(line.key);
+                      }}
+                      aria-invalid={
+                        validation?.product === line.key || undefined
+                      }
+                      aria-describedby={
+                        validation?.product === line.key
+                          ? feedbackId
+                          : undefined
+                      }
                       value={line.product}
-                      onChange={(event) =>
+                      onChange={(event) => {
+                        if (validation?.product === line.key)
+                          setValidation(null);
                         setLines(
                           lines.map((current) =>
                             current.key === line.key
                               ? { ...current, product: event.target.value }
                               : current,
                           ),
-                        )
-                      }
+                        );
+                      }}
                     >
                       <option value="">Elegí un producto</option>
                       {products.map((product) => (
@@ -300,7 +348,9 @@ export function SaleForm({
         className="surface panel sale-summary"
         aria-label="Resumen de venta"
       >
-        <h2>{review ? "Revisión final" : "Resumen"}</h2>
+        <h2 ref={reviewHeading} tabIndex={review ? -1 : undefined}>
+          {review ? "Revisión final" : "Resumen"}
+        </h2>
         <dl className="facts">
           <div>
             <dt>Total de venta</dt>
@@ -326,14 +376,21 @@ export function SaleForm({
               className="button secondary"
               type="button"
               disabled={pending}
-              onClick={() => setReview(null)}
+              onClick={() => {
+                returningToEdit.current = true;
+                setReview(null);
+              }}
             >
               Editar venta
             </button>
           </form>
         ) : (
           <>
-            <FormFeedback state={{ error: validation || undefined }} />
+            {validation && (
+              <div id={feedbackId}>
+                <FormFeedback state={{ error: validation.message }} />
+              </div>
+            )}
             <button className="button primary" type="button" onClick={prepare}>
               Revisar venta <Icon name="arrow" size={17} />
             </button>
