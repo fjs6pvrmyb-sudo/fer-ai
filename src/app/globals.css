@@ -346,6 +346,8 @@ label {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  /* WCAG 2.2 2.5.8: objetivo mínimo de 24 px para enlaces sueltos. */
+  min-height: 1.5rem;
   color: var(--blue-dark);
   font-weight: 650;
   font-size: 0.9rem;
