@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f2a5c"/><stop offset="1" stop-color="#14367a"/></linearGradient></defs>
+<rect width="1920" height="1080" fill="url(#g)"/>
+<g transform="translate(120.0 150.0) scale(0.1600)"><rect width="1024" height="1024" rx="284" fill="#234edc"/><g fill="#ffffff"><g transform="translate(312.9 768.0) skewY(-14)"><rect x="-56.9" y="-227.6" width="113.8" height="227.6" rx="56.9"/></g><g transform="translate(512.0 768.0) skewY(-14)"><rect x="-56.9" y="-341.3" width="113.8" height="341.3" rx="56.9"/></g><g transform="translate(711.1 768.0) skewY(-14)"><rect x="-56.9" y="-455.1" width="113.8" height="455.1" rx="56.9"/></g></g></g>
+<text x="320.0" y="262.0" font-family="Helvetica Neue, Helvetica, Arial" font-weight="800" font-size="118.0" letter-spacing="-5.0" fill="#ffffff">FER<tspan fill="#2dd4a7"> AI</tspan></text>
+<text x="122.0" y="470.0" font-family="Helvetica Neue, Helvetica, Arial" font-weight="700" font-size="64.0" fill="#ffffff">Ventas y cobros de tu pyme,</text>
+<text x="122.0" y="550.0" font-family="Helvetica Neue, Helvetica, Arial" font-weight="700" font-size="64.0" fill="#ffffff">conversando con FER.</text>
+<text x="122.0" y="650.0" font-family="Helvetica Neue, Helvetica, Arial" font-weight="400" font-size="36.0" fill="#c8d4ee">La IA interpreta. El sistema valida.</text>
+<text x="122.0" y="700.0" font-family="Helvetica Neue, Helvetica, Arial" font-weight="400" font-size="36.0" fill="#c8d4ee">La persona autorizada confirma.</text>
+<text x="122.0" y="960.0" font-family="Menlo, monospace" font-size="24.0" fill="#2dd4a7" letter-spacing="2.0">DOJO AI HACKATHON 2026 · BUILD FOR BUSINESS</text>
+<g transform="translate(1180.0 250.0)" font-family="Menlo, monospace" font-size="27.0">
+  <rect width="620.0" height="580.0" rx="18.0" fill="#ffffff"/>
+  <text x="40.0" y="70.0" fill="#536279">Panadería Demo</text><text x="580.0" y="70.0" text-anchor="end" fill="#536279">Borrador</text>
+  <text x="40.0" y="140.0" fill="#142137" font-family="Helvetica Neue, Helvetica, Arial" font-size="28.0" font-style="italic">«Vendí un pan de masa madre,</text>
+  <text x="40.0" y="180.0" fill="#142137" font-family="Helvetica Neue, Helvetica, Arial" font-size="28.0" font-style="italic">me pagaron dos mil por SINPE…»</text>
+  <line x1="40.0" y1="225.0" x2="580.0" y2="225.0" stroke="#cbd3df" stroke-dasharray="8.0 8.0" stroke-width="2.0"/>
+  <text x="40.0" y="285.0" fill="#142137">Pan de masa madre</text><text x="580.0" y="285.0" text-anchor="end" fill="#142137">₡5 000,00</text>
+  <text x="40.0" y="335.0" fill="#142137">SINPE</text><text x="580.0" y="335.0" text-anchor="end" fill="#142137">₡2 000,00</text>
+  <text x="40.0" y="385.0" fill="#142137" font-weight="700">Saldo pendiente</text><text x="580.0" y="385.0" text-anchor="end" fill="#142137" font-weight="700">₡3 000,00</text>
+  <line x1="40.0" y1="425.0" x2="580.0" y2="425.0" stroke="#cbd3df" stroke-dasharray="8.0 8.0" stroke-width="2.0"/>
+  <rect x="40.0" y="460.0" width="330.0" height="70.0" rx="35.0" fill="#234edc"/>
+  <text x="205.0" y="505.0" text-anchor="middle" fill="#ffffff" font-family="Helvetica Neue, Helvetica, Arial" font-weight="700" font-size="28.0">Revisar y confirmar</text>
+</g>
+</svg>
