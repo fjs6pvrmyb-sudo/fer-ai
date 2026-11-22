@@ -129,6 +129,7 @@ test("revisa, cierra y concilia dos jornadas desde el dashboard móvil", async (
       payment.locator("header").getByText("Verificado", { exact: true }),
     ).toBeVisible();
     await expect(payment.getByText("FICTICIO-SINPE-MOVIL")).toBeVisible();
+    await expect(payment.getByLabel("Estado")).toHaveValue("verified");
     await page.screenshot({
       path: testInfo.outputPath("conciliacion-movil.png"),
       fullPage: true,

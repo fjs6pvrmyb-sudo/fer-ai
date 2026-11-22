@@ -234,6 +234,7 @@ export default async function Reconciliation({
                   <label>
                     Estado
                     <select
+                      key={payment.status}
                       name="status"
                       defaultValue={
                         payment.status === "missing"
