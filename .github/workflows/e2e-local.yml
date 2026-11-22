@@ -86,10 +86,6 @@ jobs:
         id: security
         if: always()
         run: npm run test:security
-      - name: Fiscal offline (sin emisión real)
-        id: fiscal
-        if: always()
-        run: npm run test:fiscal
       - name: Compilar la app
         id: build
         if: always()
@@ -109,6 +105,24 @@ jobs:
           npx next start -p 3200 --hostname 127.0.0.1 > next-nojs.log 2>&1 &
           npx wait-on -t 60000 http://127.0.0.1:3200/acceso 2>/dev/null || sleep 15
           FERIA_APP_URL=http://127.0.0.1:3200 node --test scripts/test-login-no-js.mjs
+      - name: Fiscal offline (sin emisión real) en Supabase de puerto alternativo
+        id: fiscal
+        if: always()
+        run: |
+          # El test fiscal exige una instancia desechable fuera del puerto 54321.
+          npx supabase stop --no-backup
+          sed -i -E -e 's/^project_id = "feria"/project_id = "feria-fiscal"/' -e 's/= 543([0-9]{2})$/= 553\1/' supabase/config.toml
+          npm run db:start
+          eval "$(npx supabase status -o env)"
+          publishable="${PUBLISHABLE_KEY:-$ANON_KEY}"
+          secret="${SECRET_KEY:-$SERVICE_ROLE_KEY}"
+          echo "::add-mask::$secret"
+          sed -i -e "s|^NEXT_PUBLIC_SUPABASE_URL=.*|NEXT_PUBLIC_SUPABASE_URL=$API_URL|" \
+            -e "s|^NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=.*|NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$publishable|" \
+            -e "s|^SUPABASE_SERVICE_ROLE_KEY=.*|SUPABASE_SERVICE_ROLE_KEY=$secret|" .env.local
+          echo "FERIA_FISCAL_DISPOSABLE_URL=$API_URL" >> .env.local
+          npm run demo:seed
+          npm run test:fiscal
       - name: Resumen
         if: always()
         run: |
