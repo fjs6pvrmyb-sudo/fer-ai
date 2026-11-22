@@ -1,0 +1,10 @@
+# Nunca subir entornos locales ni artefactos al despliegue.
+.env*
+!.env.example
+.vercel
+.next
+node_modules
+playwright-report
+test-results
+.claude
+*.log
