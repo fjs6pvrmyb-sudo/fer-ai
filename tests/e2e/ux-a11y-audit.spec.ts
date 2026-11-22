@@ -63,17 +63,14 @@ async function audit(page: Page): Promise<Issue[]> {
         .slice(0, 40);
       return `${el.tagName.toLowerCase()}${id}${cls}${text ? ` «${text}»` : ""}`;
     };
-    const visible = (el: Element) => {
-      const style = getComputedStyle(el);
-      const rect = el.getBoundingClientRect();
-      return (
-        style.visibility !== "hidden" &&
-        style.display !== "none" &&
-        rect.width > 0 &&
-        rect.height > 0 &&
-        !el.closest("[hidden],[aria-hidden='true'],[inert]")
-      );
-    };
+    const visible = (el: Element) =>
+      // checkVisibility descarta contenido de <details> cerrados y content-visibility.
+      el.checkVisibility({
+        contentVisibilityAuto: true,
+        visibilityProperty: true,
+      }) &&
+      el.getBoundingClientRect().width > 0 &&
+      !el.closest("[aria-hidden='true'],[inert]");
     const background = (el: Element): number[] | null => {
       let color = [0, 0, 0, 0];
       for (let node: Element | null = el; node; node = node.parentElement) {
@@ -244,6 +241,14 @@ async function audit(page: Page): Promise<Issue[]> {
     )) {
       if (!visible(el)) continue;
       const rect = el.getBoundingClientRect();
+      // Una casilla dentro de <label> tiene como objetivo toda la etiqueta.
+      if (
+        el.matches("input[type=checkbox],input[type=radio]") &&
+        el.closest("label")
+      ) {
+        const label = el.closest("label")!.getBoundingClientRect();
+        if (label.width >= 24 && label.height >= 24) continue;
+      }
       const inline =
         el.tagName === "A" &&
         getComputedStyle(el).display === "inline" &&
