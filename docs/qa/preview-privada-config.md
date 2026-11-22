@@ -62,6 +62,22 @@ Ninguna otra. El worker fiscal (`service_role`) **no** se despliega. La preview 
 
 La migración `20261122040216` **no** necesita reversión para la preview.
 
+## Guion de demo verificado (5 min)
+
+Ensayado de punta a punta en la preview el 2026-11-22 (#10). Reemplaza el guion del PR #19: la UI **no tiene vista fiscal**, así que ese paso se narra.
+
+| Tiempo    | Cuenta                   | Acción en pantalla                                                                                                                                                                | Qué se ve                                                                                 |
+| --------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| 0:00–0:30 | `operador@feria.example` | Login, elegir Panadería Demo, abrir Catálogo                                                                                                                                      | Solo su empresa, precios en CRC                                                           |
+| 0:30–1:45 | Operador                 | _Preparar venta con FER_: «vendí un pan de masa madre de cinco mil colones. Me pagaron dos mil por SINPE y quedaron tres mil pendientes» → _Revisar borrador_ → _Confirmar venta_ | Borrador ₡5 000 / ₡2 000 / saldo ₡3 000. La IA propone y la persona confirma una sola vez |
+| 1:45–2:15 | Operador                 | _Abrir detalle_                                                                                                                                                                   | «Pago parcial». El operador no ve «Registrar cobro» (permisos por rol). Cerrar sesión     |
+| 2:15–3:15 | `admin@feria.example`    | Ventas → la venta → _Registrar cobro_ ₡3 000 en efectivo                                                                                                                          | Pasa a «Pagada», saldo ₡0                                                                 |
+| 3:15–4:15 | Admin                    | _Conciliación_ → pago SINPE → evidencia `SINPE-DEMO-xxxx` ₡2 000, _Verificado_                                                                                                    | Jornada «En revisión», verificados ₡2 000                                                 |
+| 4:15–4:45 | Admin                    | _Inicio_                                                                                                                                                                          | Ventas = cobros, efectivo y SINPE separados, pagos por verificar                          |
+| 4:45–5:00 | Admin                    | Narrar: «La emisión fiscal se prepara offline, sin emitir comprobantes reales, y está cubierta por pruebas automáticas». Cerrar sesión                                            | Vuelve a `/acceso`                                                                        |
+
+Antes de la demo: usar una referencia de evidencia nueva en cada ensayo, porque la de la venta ya ensayada queda registrada. Plan B: el mismo guion en local con `npm run db:start` y el seed, o la corrida E2E de Actions como evidencia.
+
 ## Checklist de aceptación
 
 | #   | Criterio                                                                        | Cómo se verifica                                                                                                                                                                         | Estado                                                                     |
