@@ -12,9 +12,10 @@ export function LoginForm({
   configured: boolean;
   forSale: boolean;
 }) {
-  const [message, run] = useActionState(signIn.bind(null, forSale), "");
+  const [message, run] = useActionState(signIn, "");
   return (
     <form className="form-stack login-form" action={run}>
+      {forSale ? <input type="hidden" name="destino" value="venta" /> : null}
       <label>
         Correo electrónico
         <input
