@@ -146,9 +146,9 @@ test("la venta manual guía el foco de error, revisión y edición", async ({
   const review = page.getByRole("button", { name: "Revisar venta" });
   await review.focus();
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("alert")).toHaveText(
-    "Seleccioná un producto en la línea 1.",
-  );
+  await expect(
+    page.getByRole("region", { name: "Resumen de venta" }).getByRole("alert"),
+  ).toHaveText("Seleccioná un producto en la línea 1.");
   await expect(product).toBeFocused();
   await expect(product).toHaveAttribute("aria-invalid", "true");
   await expect(product).toHaveAccessibleDescription(
