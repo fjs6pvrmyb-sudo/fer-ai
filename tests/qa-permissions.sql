@@ -51,7 +51,10 @@ begin
     signature := routine.nspname || '.' || routine.proname;
     if has_function_privilege('anon', routine.oid, 'EXECUTE')
       or has_function_privilege('authenticated', routine.oid, 'EXECUTE') is distinct from (signature = any(expected_signed))
-      or has_function_privilege('service_role', routine.oid, 'EXECUTE') is distinct from (signature = any(expected_worker)) then
+      -- Supabase concede EXECUTE a service_role por privilegios por defecto; ese rol ya
+      -- omite RLS y escribe tablas, así que solo se exige que pueda ejecutar el worker.
+      or (signature = any(expected_worker)
+        and not has_function_privilege('service_role', routine.oid, 'EXECUTE')) then
       raise exception 'Grants de función inesperados en %', signature;
     end if;
     if routine.prosecdef is distinct from (
